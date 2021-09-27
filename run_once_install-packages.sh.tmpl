@@ -1,20 +1,20 @@
 #!/bin/bash
 
 {{- if .dev -}}
-	curl -sSL https://zshoham.github.io/static/linux-setup/dev.sh | bash
-
+	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev.sh)"
+{{- end -}}
 {{- if .gui -}}
-	curl -sSL https://zshoham.github.io/static/linux-setup/basic-gui.sh | bash
-
-{{- if .dev && .gui -}}
-	curl -sSL https://zshoham.github.io/static/linux-setup/dev-gui.sh | bash
-	
+	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/basic-gui.sh)"
+{{- end -}}
+{{- if (and .dev .gui) -}}
+	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev-gui.sh)"
+{{- end -}}
 {{- if .writing -}}
-	curl -sSL https://zshoham.github.io/static/linux-setup/writing.sh | bash
-	
+	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/writing.sh)"
+{{- end -}}
 {{- if .media -}}
-	curl -sSL https://zshoham.github.io/static/linux-setup/media.sh | bash
-		
+	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/media.sh)"
+{{- end -}}
 {{- if .gaming -}}
-	curl -sSL https://zshoham.github.io/static/linux-setup/gaming.sh | bash
-		
+	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/gaming.sh)"
+{{- end -}}		

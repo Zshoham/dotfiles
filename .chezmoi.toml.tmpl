@@ -37,8 +37,8 @@
 {{- end -}}
 
 [data]
-	email = {{ $email }}
-	git_handle = {{ $git_handle }}
+	email = {{ $email | quote }}
+	git_handle = {{ $git_handle | quote }}
 	gui = {{ $gui }}
 	dev = {{ $dev }}
 	writing = {{ $writing }}
