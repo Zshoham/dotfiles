@@ -5,12 +5,12 @@
 
 {{- $git_handle := get . "git_handle" -}}
 {{- if not $git_handle -}}
-{{-   $gui = promptString "git handle" -}}
+{{-   $git_handle = promptString "git handle" -}}
 {{- end -}}
 
 {{- $gui := get . "gui" -}}
 {{- if not $git_handle -}}
-{{-   $dev = promptBool "install gui" -}}
+{{-   $gui = promptBool "install gui" -}}
 {{- end -}}
 
 {{- $dev := get . "dev" -}}
@@ -23,7 +23,7 @@
 {{- $gaming := false -}}
 {{- if $gui -}}
 {{- 	$writing := get . "writing" -}}
-{{- 	if not $git_handle -}}
+{{- 	if not $writing -}}
 {{-   		$writing = promptBool "install writing" -}}
 {{- 	end -}}
 {{- 	$media := get . "media" -}}
