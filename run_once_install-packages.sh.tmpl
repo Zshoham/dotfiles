@@ -1,20 +1,20 @@
 #!/bin/bash
 
-{{- if .dev -}}
+{{- if .dev }}
 	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev.sh)"
-{{- end -}}
-{{- if .gui -}}
+{{- end }}
+{{- if .gui }}
 	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/basic-gui.sh)"
-{{- end -}}
-{{- if (and .dev .gui) -}}
+{{- end }}
+{{- if (and .dev .gui) }}
 	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev-gui.sh)"
-{{- end -}}
-{{- if .writing -}}
+{{- end }}
+{{- if .writing }}
 	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/writing.sh)"
-{{- end -}}
-{{- if .media -}}
+{{- end }}
+{{- if .media }}
 	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/media.sh)"
-{{- end -}}
-{{- if .gaming -}}
+{{- end }}
+{{- if .gaming }}
 	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/gaming.sh)"
-{{- end -}}		
+{{- end }}		
