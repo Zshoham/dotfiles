@@ -27,11 +27,11 @@
 {{-   		$writing = promptBool "install writing" -}}
 {{- 	end -}}
 {{- 	$media := get . "media" -}}
-{{- 	if not $git_handle -}}
+{{- 	if not $media -}}
 {{-   		$media = promptBool "install media" -}}
 {{- 	end -}}
 {{- 	$gaming := get . "gaming" -}}
-{{- 	if not $git_handle -}}
+{{- 	if not $gaming -}}
 {{-   		$gaming = promptBool "install gaming" -}}
 {{- 	end -}}
 {{- end -}}
