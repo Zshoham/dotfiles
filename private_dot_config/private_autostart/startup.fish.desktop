@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/home/sgame/.config/fish/startup.fish
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_US]=Start Script
+Name=Start Script
+Comment[en_US]=
+Comment=

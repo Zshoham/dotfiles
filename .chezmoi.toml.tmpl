@@ -1,0 +1,46 @@
+{{- $email := get . "email" -}}
+{{- if not $email -}}
+{{-   $email = promptString "email" -}}
+{{- end -}}
+
+{{- $git_handle := get . "git_handle" -}}
+{{- if not $git_handle -}}
+{{-   $gui = promptString "git handle" -}}
+{{- end -}}
+
+{{- $gui := get . "gui" -}}
+{{- if not $git_handle -}}
+{{-   $dev = promptBool "install gui" -}}
+{{- end -}}
+
+{{- $dev := get . "dev" -}}
+{{- if not $git_handle -}}
+{{-   $dev = promptBool "install dev" -}}
+{{- end -}}
+
+{{- $writing := false -}}
+{{- $media := false -}}
+{{- $gaming := false -}}
+{{- if $gui -}}
+{{- 	$writing := get . "writing" -}}
+{{- 	if not $git_handle -}}
+{{-   		$writing = promptBool "install writing" -}}
+{{- 	end -}}
+{{- 	$media := get . "media" -}}
+{{- 	if not $git_handle -}}
+{{-   		$media = promptBool "install media" -}}
+{{- 	end -}}
+{{- 	$gaming := get . "gaming" -}}
+{{- 	if not $git_handle -}}
+{{-   		$gaming = promptBool "install gaming" -}}
+{{- 	end -}}
+{{- end -}}
+
+[data]
+	email = {{ $email }}
+	git_handle = {{ $git_handle }}
+	gui = {{ $gui }}
+	dev = {{ $dev }}
+	writing = {{ $writing }}
+	media = {{ $media  }}
+	gaming = {{ $gaming  }}

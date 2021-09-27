@@ -1,0 +1,18 @@
+export CARGO_HOME="$HOME/.lcoal/share/cargo"
+export RUSTUP_HOME="$HOME/.local/share/rustup"
+export PATH="$CARGO_HOME/bin:$PATH"
+export EDITOR='micro'
+
+{{- if .dev -}}
+export JULIA_DEPOT_PATH="$HOME/.local/share/julia"
+export GOPATH="$HOME/.local/share/golang"
+{{- end -}}
+
+set fish_greeting
+starship init fish | source
+
+# aliases
+
+alias cat bat
+alias ls exa
+alias tree exa -T

@@ -1,0 +1,20 @@
+#!/bin/bash
+
+{{- if .dev -}}
+	curl -sSL https://zshoham.github.io/static/linux-setup/dev.sh | bash
+
+{{- if .gui -}}
+	curl -sSL https://zshoham.github.io/static/linux-setup/basic-gui.sh | bash
+
+{{- if .dev && .gui -}}
+	curl -sSL https://zshoham.github.io/static/linux-setup/dev-gui.sh | bash
+	
+{{- if .writing -}}
+	curl -sSL https://zshoham.github.io/static/linux-setup/writing.sh | bash
+	
+{{- if .media -}}
+	curl -sSL https://zshoham.github.io/static/linux-setup/media.sh | bash
+		
+{{- if .gaming -}}
+	curl -sSL https://zshoham.github.io/static/linux-setup/gaming.sh | bash
+		
