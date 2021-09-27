@@ -9,12 +9,12 @@
 {{- end -}}
 
 {{- $gui := get . "gui" -}}
-{{- if not $git_handle -}}
+{{- if not $gui -}}
 {{-   $gui = promptBool "install gui" -}}
 {{- end -}}
 
 {{- $dev := get . "dev" -}}
-{{- if not $git_handle -}}
+{{- if not $dev -}}
 {{-   $dev = promptBool "install dev" -}}
 {{- end -}}
 
