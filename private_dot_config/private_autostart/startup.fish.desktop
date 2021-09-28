@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Exec=/home/sgame/.config/fish/startup.fish
+Exec=$HOME/.config/fish/startup.fish
 Hidden=false
 NoDisplay=false
 X-GNOME-Autostart-enabled=true
