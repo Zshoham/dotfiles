@@ -18,9 +18,6 @@
 {{-   $dev = promptBool "install dev" -}}
 {{- end -}}
 
-{{- $writing := false -}}
-{{- $media := false -}}
-{{- $gaming := false -}}
 {{- if $gui -}}
 {{- 	$writing := get . "writing" -}}
 {{- 	if not $writing -}}
