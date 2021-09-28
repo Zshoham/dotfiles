@@ -10,4 +10,4 @@ ssh_only = true
 format = "[$hostname](bold blue) "
  
 [conda]
-ignore_base = false
+ignore_base = true
