@@ -1,4 +1,5 @@
 {{- if not .gui -}}
 .config/alacritty.yml
 .config/autostart/*
+.config/fish/startup.fish
 {{- end -}}
