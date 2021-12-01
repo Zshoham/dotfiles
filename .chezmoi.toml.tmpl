@@ -10,12 +10,12 @@
 
 {{- $gui := get . "gui" -}}
 {{- if not $gui -}}
-{{-   $gui = promptBool "install gui" -}}
+{{-   $gui = promptBool "install gui (y/n)" -}}
 {{- end -}}
 
 {{- $dev := get . "dev" -}}
 {{- if not $dev -}}
-{{-   $dev = promptBool "install dev" -}}
+{{-   $dev = promptBool "install dev (y/n)" -}}
 {{- end -}}
 
 {{- $writing := get . "writing" -}}
@@ -25,13 +25,13 @@
 
 {{- if $gui -}}
 {{- 	if not $writing -}}
-{{-   		$writing = promptBool "install writing" -}}
+{{-   		$writing = promptBool "install writing (y/n)" -}}
 {{- 	end -}}
 {{- 	if not $media -}}
-{{-   		$media = promptBool "install media" -}}
+{{-   		$media = promptBool "install media (y/n)" -}}
 {{- 	end -}}
 {{- 	if not $gaming -}}
-{{-   		$gaming = promptBool "install gaming" -}}
+{{-   		$gaming = promptBool "install gaming (y/n)" -}}
 {{- 	end -}}
 {{- end -}}
 
