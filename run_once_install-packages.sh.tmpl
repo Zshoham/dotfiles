@@ -1,5 +1,8 @@
 #!/bin/bash
 
+cat $HOME/.bashrc
+source $HOME/.bashrc
+
 {{- if .dev }}
 	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev.sh)"
 {{- end }}
