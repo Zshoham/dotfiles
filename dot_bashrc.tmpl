@@ -118,8 +118,11 @@ fi
 
 . $HOME/.config/exports
 
+eval "$(fnm env)"
+eval "$(pyenv init --path)
+# eval "$(pyenv init -)
 eval "$(starship init bash)"
 
 alias cat="bat"
-alias ls"exa"
-alias tree"exa -T"
+alias ls="exa"
+alias tree="exa -T"
