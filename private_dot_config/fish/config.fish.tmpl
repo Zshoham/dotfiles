@@ -1,22 +1,4 @@
-export EDITOR='micro'
-export CARGO_HOME="$HOME/.local/share/cargo"
-export RUSTUP_HOME="$HOME/.local/share/rustup"
-export JABBA_HOME="$HOME/.local/share/jabba"
-
-export PATH="$CARGO_HOME/bin:$PATH"
-export PATH="$JABBA_HOME/bin:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-
-{{- if .dev }}
-export JULIA_DEPOT_PATH="$HOME/.local/share/julia"
-export GOPATH="$HOME/.local/share/golang"
-export FNM_DIR="$HOME/.local/share/fnm"
-export PYENV_ROOT="$HOME/.local/share/pyenv"
-
-export PATH="$PYENV_ROOT/bin:$PATH"
-export PATH="$PYENV_ROOT/shims:$PATH"
-{{- end }}
-
+source $HOME/.config/exports
 
 set fish_greeting
 

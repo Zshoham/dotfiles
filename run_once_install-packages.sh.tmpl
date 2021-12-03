@@ -1,7 +1,6 @@
 #!/bin/bash
 
-cat $HOME/.bashrc
-source $HOME/.bashrc
+. $HOME/.config/exports
 
 {{- if .dev }}
 	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev.sh)"
@@ -20,4 +19,4 @@ source $HOME/.bashrc
 {{- end }}
 {{- if .gaming }}
 	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/gaming.sh)"
-{{- end }}		
+{{- end }}
