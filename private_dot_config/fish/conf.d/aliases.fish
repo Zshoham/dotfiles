@@ -3,6 +3,7 @@ alias ls 'exa --icons --git'
 alias tree 'exa -T'
 alias files nautilus
 alias dotfiles chezmoi
+alias md glow
 
 # ssh
 alias ssh-start 'sudo systemctl start ssh.service'
