@@ -1,5 +1,7 @@
 {{- if not .gui -}}
 .config/alacritty.yml
-.config/autostart/*
-.config/fish/startup.fish
+.config/autostart
+.config/zathura
+.local/bin/startup
+.local/bin/terminal
 {{- end -}}
