@@ -2,21 +2,30 @@
 
 . $HOME/.config/exports
 
+function run_script() {
+	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/$1)"
+}
+
+run_script "basic.sh"
+
 {{- if .dev }}
-	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev.sh)"
+	run_script "dev.sh"
 {{- end }}
 {{- if .gui }}
-	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/basic-gui.sh)"
+	run_script "basic-gui.sh"
 {{- end }}
 {{- if (and .dev .gui) }}
-	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/dev-gui.sh)"
+	run_script "dev-gui.sh"
 {{- end }}
 {{- if .writing }}
-	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/writing.sh)"
+	run_script "writing.sh"
 {{- end }}
 {{- if .media }}
-	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/media.sh)"
+	run_script "media.sh"
 {{- end }}
 {{- if .gaming }}
-	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/gaming.sh)"
+	run_script "gaming.sh"
 {{- end }}
+
+echo "rebooting system to apply changes"
+sudo shutdown -r
