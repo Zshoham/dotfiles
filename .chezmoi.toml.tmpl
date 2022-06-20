@@ -18,18 +18,20 @@
 {{-   $dev = promptBool "install dev (y/n)" -}}
 {{- end -}}
 
-{{- $writing := get . "writing" -}}
-{{- $media := get . "media" -}}
-{{- $gaming := get . "gaming" -}}
-
+{{- $writing := false -}}
+{{- $media := false -}}
+{{- $gaming := false -}}
 
 {{- if $gui -}}
+{{- 	$writing := get . "writing" -}}
 {{- 	if not $writing -}}
 {{-   		$writing = promptBool "install writing (y/n)" -}}
 {{- 	end -}}
+{{- 	$media := get . "media" -}}
 {{- 	if not $media -}}
 {{-   		$media = promptBool "install media (y/n)" -}}
 {{- 	end -}}
+{{- 	$gaming := get . "gaming" -}}
 {{- 	if not $gaming -}}
 {{-   		$gaming = promptBool "install gaming (y/n)" -}}
 {{- 	end -}}
