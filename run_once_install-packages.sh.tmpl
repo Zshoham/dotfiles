@@ -4,6 +4,7 @@
 
 function run_script() {
 	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/$1)"
+	source $HOME/.profile
 }
 
 run_script "basic.sh"
