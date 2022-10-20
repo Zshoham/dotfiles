@@ -1,4 +1,0 @@
-theme = "onedark-transparent"
-
-[keys.insert]
-"C-x" = "normal_mode"
