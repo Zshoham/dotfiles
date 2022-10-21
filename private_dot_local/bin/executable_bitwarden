@@ -1,0 +1,22 @@
+#! /bin/env fish
+
+set COPY "xclip -sel clip"
+set CLEAR "xclip -sel clip < /dev/null"
+
+if test "unauthenticated" = (bw status | jq -r .status)
+    bw login
+end
+set logins (bw list items)
+set name (echo $logins | jq '.[].name' | fzf)
+set selected (echo $logins | jq -r ".[] | select(.name == $name)")
+
+echo "Name: $name"
+echo "> Copying username to clipboard"
+printf '%s' (echo $selected | jq -r '.login.username') | eval $COPY
+read -n 1 -P "Press any key to copy password"
+
+echo "> Copying password to clipboard"
+printf '%s' (echo $selected | jq -r '.login.password') | eval $COPY   
+read -n 1 -P "Press any key to clear clipboard"
+
+eval $CLEAR
