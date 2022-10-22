@@ -1,0 +1,8 @@
+#!/bin/sh
+
+BIN_PATH="$HOME/.local/bin/kitty"
+INSTALL_PATH="$HOME/.local/share"
+
+curl -L "https://sw.kovidgoyal.net/kitty/installer.sh" | sh /dev/stdin dest=$INSTALL_PATH launch=n
+rm $BIN_PATH
+ln -s "$INSTALL_PATH/kitty.app/bin/kitty" $BIN_PATH
