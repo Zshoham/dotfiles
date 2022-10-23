@@ -1,22 +1,15 @@
 #!/bin/bash
 
-. $HOME/.config/exports
 
 function run_script() {
 	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/$1)"
 	source $HOME/.profile
 }
 
-run_script "basic.sh"
+run_script "headless.sh"
 
-{{- if .dev }}
-	run_script "dev.sh"
-{{- end }}
 {{- if .gui }}
-	run_script "basic-gui.sh"
-{{- end }}
-{{- if (and .dev .gui) }}
-	run_script "dev-gui.sh"
+	run_script "gui.sh"
 {{- end }}
 {{- if .writing }}
 	run_script "writing.sh"

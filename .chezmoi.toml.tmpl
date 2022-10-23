@@ -13,11 +13,6 @@
 {{-   $gui = promptBool "install gui (y/n)" -}}
 {{- end -}}
 
-{{- $dev := get . "dev" -}}
-{{- if not $dev -}}
-{{-   $dev = promptBool "install dev (y/n)" -}}
-{{- end -}}
-
 {{- $writing := false -}}
 {{- $media := false -}}
 {{- $gaming := false -}}
@@ -41,7 +36,6 @@
 	email = {{ $email | quote }}
 	git_handle = {{ $git_handle | quote }}
 	gui = {{ $gui }}
-	dev = {{ $dev }}
 	writing = {{ $writing }}
 	media = {{ $media  }}
 	gaming = {{ $gaming  }}
