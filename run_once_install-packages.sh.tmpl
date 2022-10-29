@@ -2,8 +2,7 @@
 
 
 function run_script() {
-	sh -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/$1)"
-	source $HOME/.profile
+	bash -c "$(curl -sSL https://zshoham.github.io/static/linux-setup/$1)"
 }
 
 run_script "headless.sh"
