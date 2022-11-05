@@ -19,7 +19,7 @@
     RUSTUP_HOME = "${config.xdg.dataHome}/rustup";
     GOPATH = "${config.xdg.dataHome}/golang";
     _JAVA_OPTIONS = "-Djava.util.prefs.userRoot=${config.xdg.dataHome}/java";
-    PYENV_ROOTO = "${config.xdg.dataHome}/pyenv";
+    PYENV_ROOT = "${config.xdg.dataHome}/pyenv";
   };
 
   home.sessionPath = [
