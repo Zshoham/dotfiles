@@ -6,6 +6,7 @@ function run_script() {
 }
 
 run_script "headless.sh"
+. "$HOME/.profile"
 
 {{- if .gui }}
 	run_script "gui.sh"

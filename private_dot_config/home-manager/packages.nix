@@ -36,6 +36,7 @@
     pkgs.bitwarden-cli
     pkgs.hexyl
     pkgs.fzf
+    pkgs.chezmoi
 
     # programming languages
     pkgs.go
