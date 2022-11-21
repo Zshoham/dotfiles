@@ -10,7 +10,7 @@
     };
     "org/gnome/system/location".enabled = false;
     "org/gnome/shell" = {
-	  favorite-apps = [ "/org/gnome/shell/favorite-apps" "com.alacritty.Alacritty.desktop" "brave-browser.desktop" ];
+	  favorite-apps = [ "/org/gnome/shell/favorite-apps" "kitty.desktop" "brave-browser.desktop" ];
     };
     "org/gnome/desktop/wm/preferences".button-layout = "appmenu:minimize,maximize,close";
     "org/gnome/shell/extensions/dash-to-dock" = {
@@ -32,7 +32,7 @@
     };
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
       name = "Terminal";
-      command = "$HOME/.local/bin/terminal";
+      command = "${config.home.homeDirectory}/.local/bin/terminal";
       binding = "<Super>t";	
     };
   };
