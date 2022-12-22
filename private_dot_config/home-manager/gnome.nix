@@ -30,10 +30,5 @@
       two-finger-scrolling-enabled = true;
       natural-scroll = true;	
     };
-    "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-      name = "Terminal";
-      command = "${config.home.homeDirectory}/.local/bin/terminal";
-      binding = "<Super>t";	
-    };
   };
 }
