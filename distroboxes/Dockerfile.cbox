@@ -1,0 +1,18 @@
+FROM basebox:latest
+
+WORKDIR /opt/
+
+RUN aur-install visual-studio-code-bin
+
+RUN mkdir visual-studio-code/data
+
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension Gruntfuggly.todo-tree
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension Catppuccin.catppuccin-vsc
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension GitLab.gitlab-workflow
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension ms-azuretools.vscode-docker
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension ms-vscode.makefile-tools
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension eamodio.gitlens
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension ms-vscode-remote.remote-ssh
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension ms-vscode.cpptools-extension-pack
+RUN code --no-sandbox --user-data-dir /opt/vscode --install-extension christian-kohler.path-intellisense
+

@@ -8,34 +8,13 @@
 {{-   $git_handle = promptString "git handle" -}}
 {{- end -}}
 
-{{- $gui := get . "gui" -}}
-{{- if not $gui -}}
-{{-   $gui = promptBool "install gui (y/n)" -}}
-{{- end -}}
-
-{{- $writing := false -}}
-{{- $media := false -}}
-{{- $gaming := false -}}
-
-{{- if $gui -}}
-{{- 	$writing := get . "writing" -}}
-{{- 	if not $writing -}}
-{{-   		$writing = promptBool "install writing (y/n)" -}}
-{{- 	end -}}
-{{- 	$media := get . "media" -}}
-{{- 	if not $media -}}
-{{-   		$media = promptBool "install media (y/n)" -}}
-{{- 	end -}}
-{{- 	$gaming := get . "gaming" -}}
-{{- 	if not $gaming -}}
-{{-   		$gaming = promptBool "install gaming (y/n)" -}}
-{{- 	end -}}
+{{- $ssh_key := get . "ssh_key" -}}
+{{- if not $ssh_key -}}
+{{-   $ssh_key = promptString "ssh key" -}}
 {{- end -}}
 
 [data]
 	email = {{ $email | quote }}
 	git_handle = {{ $git_handle | quote }}
-	gui = {{ $gui }}
-	writing = {{ $writing }}
-	media = {{ $media  }}
-	gaming = {{ $gaming  }}
+  ssh_key = {{ $ssh_key | quote }}
+

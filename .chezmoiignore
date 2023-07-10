@@ -1,7 +1,1 @@
-{{- if not .gui -}}
-.config/kitty
-.config/autostart
-.config/zathura
-.local/bin/startup
-.local/bin/terminal
-{{- end -}}
+distroboxes/
