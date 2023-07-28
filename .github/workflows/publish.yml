@@ -1,0 +1,88 @@
+name: Publish Docker Images
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  publish-base:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/zshoham/basebox
+
+      - name: Build and push Docker image
+        env: 
+          BASE_TAG: ${{ steps.meta.outputs.version }}
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./distroboxes/Dockerfile.basebox
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  publish-images:
+    needs: publish-base
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dockerfile: ./distroboxes/Dockerfile.pybox
+            image: ghcr.io/zshoham/pybox
+          - dockerfile: ./distroboxes/Dockerfile.cbox
+            image: ghcr.io/zshoham/cbox
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ matrix.image }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ${{ matrix.dockerfile }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+

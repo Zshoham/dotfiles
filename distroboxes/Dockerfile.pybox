@@ -1,4 +1,5 @@
-FROM basebox:latest
+ARG BASE_TAG=master
+FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
 RUN pacman -Syyu --noconfirm pycharm-community-edition python-pipx
 

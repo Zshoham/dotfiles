@@ -1,4 +1,5 @@
-FROM basebox:latest
+ARG BASE_TAG=master
+FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
 WORKDIR /opt/
 
