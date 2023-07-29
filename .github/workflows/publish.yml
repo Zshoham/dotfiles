@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - master
-
+  schedule:
+    - cron: '0 0 * * *'
 env:
   REGISTRY: ghcr.io
 
@@ -33,10 +34,11 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/zshoham/basebox
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=schedule,pattern={{date 'YYYYMMDD'}}
 
       - name: Build and push Docker image
-        env: 
-          BASE_TAG: ${{ steps.meta.outputs.version }}
         uses: docker/build-push-action@v4
         with:
           context: .
@@ -76,10 +78,15 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ matrix.image }}
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=schedule,pattern={{date 'YYYYMMDD'}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
+          build-args: |
+            BASE_TAG=${{ steps.meta.outputs.version }} 
           context: .
           file: ${{ matrix.dockerfile }}
           push: true
