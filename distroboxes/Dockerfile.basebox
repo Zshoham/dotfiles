@@ -4,12 +4,25 @@ RUN pacman-db-upgrade
 
 RUN pacman -Syyu --noconfirm \
   bash bc findutils gnupg less lsof ncurses pinentry procps-ng shadow time util-linux vte-common wget \
-  base-devel git \
+  base-devel git curl unzip \
   fish bat lsd fd procs dust sd ripgrep duf chezmoi age \
   lazygit git-delta \
   glow btop neovim zellij lf \
   jq hexyl fzf zoxide typst \
+  nodejs npm \
   ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono kitty zathura obsidian
+
+
+RUN mkdir /opt/build_home
+RUN mkdir /opt/build_home/config
+
+RUN echo "export XDG_CONFIG_HOME=/opt/build_home/config" > /opt/build_home.env
+RUN echo "export XDG_DATA_HOME=/opt/build_home/share" >> /opt/build_home.env
+RUN echo "export XDG_STATE_HOME=/opt/build_home/state" >> /opt/build_home.env
+RUN echo "export XDG_CACHE_HOME=/opt/build_home/cache" >> /opt/build_home.env
+
+RUN source /opt/build_home.env; git clone https://github.com/Zshoham/neovim.git $XDG_CONFIG_HOME/nvim
+RUN source /opt/build_home.env; python $XDG_CONFIG_HOME/nvim/updater.py
 
 WORKDIR /opt/
 
