@@ -1,7 +1,7 @@
 ARG BASE_TAG=master
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm pycharm-community-edition python-pipx
+RUN pacman -Syyu --noconfirm python-pipx
 
 ENV PIPX_HOME=/opt/pipx
 ENV PIPX_BIN_DIR=/usr/local/bin

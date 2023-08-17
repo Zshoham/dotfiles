@@ -5,7 +5,7 @@ RUN pacman-db-upgrade
 RUN pacman -Syyu --noconfirm \
   bash bc findutils gnupg less lsof ncurses pinentry procps-ng shadow time util-linux vte-common wget \
   base-devel git curl unzip \
-  fish bat lsd fd procs dust sd ripgrep duf chezmoi age \
+  fish starship bat lsd fd procs dust sd ripgrep duf chezmoi age \
   lazygit git-delta \
   glow btop neovim zellij lf \
   jq hexyl fzf zoxide atuin typst \
