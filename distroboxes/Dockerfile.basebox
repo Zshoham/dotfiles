@@ -10,7 +10,7 @@ RUN pacman -Syyu --noconfirm \
   glow btop neovim zellij lf \
   jq hexyl fzf zoxide atuin typst \
   nodejs npm \
-  ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono kitty zathura obsidian
+  ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono kitty
 
 
 RUN mkdir /opt/build_home
