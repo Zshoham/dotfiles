@@ -1,4 +1,4 @@
-ARG BASE_TAG=master
+ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
 RUN pacman -Syyu --noconfirm cmake gdb valgrind clang

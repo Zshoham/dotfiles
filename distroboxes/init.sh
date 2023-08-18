@@ -16,6 +16,6 @@ sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}' (rg -l /opt/build_home $HOM
 chezmoi init --apply dotfiles/
 
 sudo rm -rf dotfiles/
-sudo rm build_home.env
+sudo rm build.env
 sudo rm -rf build_home/
 sudo rm (status current-filename)
