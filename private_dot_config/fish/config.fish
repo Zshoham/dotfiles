@@ -1,5 +1,3 @@
-source $HOME/.config/exports
-
 export SHELL=(which fish)
 
 set fish_greeting
