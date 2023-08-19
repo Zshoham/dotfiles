@@ -1,10 +1,11 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm python-pipx
+RUN pacman -Syyu --noconfirm python-pipenv python-poetry
 
-RUN source /opt/build.env; curl https://pyenv.run | bash
-RUN source /opt/build.env; pyenv install 3.8
-RUN source /opt/build.env; pipx install pipenv
-RUN source /opt/build.env; pipx install poetry
+ENV PYENV_ROOT=/opt/pyenv
+ENV PATH=$PATH:$PYENV_ROOT/bin
+
+RUN curl https://pyenv.run | bash
+RUN pyenv install 3.8
 
