@@ -1,9 +1,9 @@
-FROM archlinux:latest 
+FROM greyltc/archlinux-aur:yay 
 
 RUN pacman-db-upgrade
 
 RUN pacman -Syyu --noconfirm \
-  bash bc findutils gnupg less lsof ncurses pinentry procps-ng shadow time util-linux vte-common wget \
+  bash man-db bc findutils gnupg less lsof ncurses pinentry procps-ng shadow time util-linux vte-common wget openssh \
   base-devel git curl unzip \
   fish starship bat lsd fd procs dust sd ripgrep duf chezmoi age \
   lazygit git-delta \
@@ -12,6 +12,7 @@ RUN pacman -Syyu --noconfirm \
   nodejs npm \
   ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono kitty
 
+RUN aur-install tomb
 
 WORKDIR /opt/
 

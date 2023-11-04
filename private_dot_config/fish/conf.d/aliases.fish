@@ -8,6 +8,10 @@ alias rm "rm -i"
 alias cp "cp -i"
 alias mv "mv -i"
 
+function tomb
+    zsh -c "DISPLAY= tomb $argv"
+end
+
 alias wget "wget --hsts-file '$XDG_DATA_HOME'/wget-hsts"
 
 # ssh
