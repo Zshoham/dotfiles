@@ -1,11 +1,7 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm python-pipenv python-poetry
+RUN pacman -Syyu --noconfirm python-virtualenv python-pipenv python-poetry
 
-ENV PYENV_ROOT=/opt/pyenv
-ENV PATH=$PATH:$PYENV_ROOT/bin
-
-RUN curl https://pyenv.run | bash
-RUN pyenv install 3.8
+RUN aur-install python38
 

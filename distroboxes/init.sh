@@ -15,6 +15,8 @@ sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}' (rg -l /opt/build_home $HOM
 
 chezmoi init --apply dotfiles/
 
+bat cache --build
+
 sudo rm -rf dotfiles/
 sudo rm build.env
 sudo rm -rf build_home/

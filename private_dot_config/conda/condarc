@@ -1,0 +1,10 @@
+auto_activate_base: false
+channels:
+  - conda-forge
+  - defaults
+
+envs_dirs:
+  - $HOME/.local/share/conda/envs
+
+pkgs_dirs:
+  - $HOME/.local/share/conda/pkgs

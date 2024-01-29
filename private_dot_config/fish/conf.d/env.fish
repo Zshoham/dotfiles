@@ -18,7 +18,7 @@ set -gx RUSTUP_HOME "$XDG_DATA_HOME/rusup"
 set -gx GOPATH "$XDG_DATA_HOME/golang"
 set -gx FNM_DIR "$XDG_DATA_HOME/fnm"
 set -gx JULIA_DEPOT_PATH "$XDG_DATA_HOME/julia"
-set -gx _JAVA_OPTIONS "-Djava.util.prefs.userRoot" "$XDG_CONFIG_HOME/java"
+set -gx _JAVA_OPTIONS "-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
 
 set -gx GNUPGHOME "$XDG_DATA_HOME/gnupg"
 set -gx TERMINFO_DIRS "$XDG_DATA_HOME/terminfo:/usr/share/terminfo"
@@ -29,3 +29,15 @@ set -gx PATH $PATH "$HOME/.local/bin"
 set -gx PATH $PATH "$CARGO_HOME/bin"
 set -gx PATH $PATH "$PYENV_ROOT/bin"
 set -gx PATH $PATH "$PYENV_ROOT/shims"
+
+if test -f /opt/miniconda3/bin/conda
+    eval /opt/miniconda3/bin/conda "shell.fish" "hook" $argv | source
+else
+    if test -f "/opt/miniconda3/etc/fish/conf.d/conda.fish"
+        . "/opt/miniconda3/etc/fish/conf.d/conda.fish"
+    else
+        set -x PATH "/opt/miniconda3/bin" $PATH
+    end
+end
+
+
