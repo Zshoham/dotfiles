@@ -1,7 +1,7 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm python-virtualenv python-pipenv python-poetry
+RUN pacman -Syyu --noconfirm python-virtualenv python-pipenv python-poetry 
 
-RUN aur-install python38
+RUN aur-install python38 miniconda3
 
