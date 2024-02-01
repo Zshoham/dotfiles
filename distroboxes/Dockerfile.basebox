@@ -3,9 +3,9 @@ FROM greyltc/archlinux-aur:paru
 RUN pacman-db-upgrade
 
 RUN pacman -Syyu --noconfirm \
-  bash man-db bc findutils gnupg less lsof ncurses pinentry procps-ng shadow time util-linux vte-common wget openssh base-devel git curl unzip \ 
+  bash man-db bc findutils gnupg less lsof ncurses pinentry procps-ng shadow time util-linux vte-common wget openssh base-devel rust git curl unzip \
   fish starship bat lsd fd jq hexyl zoxide procs dust sd ripgrep duf chezmoi age git-delta glow btop \
-  nodejs npm neovim atuin fzf lazygit zellij lf \ 
+  nodejs npm neovim atuin fzf lazygit zellij lf \
   typst postgresql-libs \ 
   libxcursor ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono kitty 
 
