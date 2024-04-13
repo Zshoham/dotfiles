@@ -2,12 +2,15 @@
 
 sudo chown -R $USER:$USER /opt
 
-mv /opt/build_home/config/* $HOME/.config/
-mv /opt/build_home/share/* $HOME/.local/share/
-mv /opt/build_home/state/* $HOME/.local/state/
-mv /opt/build_home/cache/* $HOME/.local/cache/
+mkdir -p $HOME/.local/bin/ $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_STATE_HOME $XDG_CACHE_HOME
 
-for path in (find $HOME/.local/ -xtype l)
+mv /opt/build_home/config/* $XDG_CONFIG_HOME
+mv /opt/build_home/share/* $XDG_DATA_HOME
+mv /opt/build_home/state/* $XDG_STATE_HOME
+mv /opt/build_home/cache/* $XDG_CACHE_HOME
+mv /opt/build_home/bin/* $HOME/.local/bin/
+
+for path in (fd $HOME/.local/ -t l)
   ln -fs "$(readlink $path | sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}')" $path
 end
 
