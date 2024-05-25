@@ -2,4 +2,4 @@ ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
 RUN pacman -Syyu --noconfirm ninja cmake gdb valgrind clang
-RUN source /opt/build.env; mkdir -p $XDG_CONFIG_HOME/gdb/ && curl -fsSL https://tinyurl.com/gef-main -o $XDG_CONFIG_HOME/gdb/gef.py
+RUN source /opt/build.env; curl -fsSL https://tinyurl.com/gef-main -o $XDG_CONFIG_HOME/gdb/gef.py

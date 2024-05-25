@@ -22,6 +22,7 @@ RUN cp dotfiles/distroboxes/build.env build.env
 RUN chmod +x init.sh
 RUN chmod +x build.env
 
+RUN source /opt/build.env; wget -P $XDG_CONFIG_HOME/zellij/plugins/ https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm
 RUN source /opt/build.env; git clone https://github.com/Zshoham/neovim.git $XDG_CONFIG_HOME/nvim
 RUN source /opt/build.env; python $XDG_CONFIG_HOME/nvim/updater.py
 
