@@ -3,5 +3,3 @@ FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
 RUN pacman -Syyu --noconfirm python-virtualenv python-pipenv pixi rye
 
-RUN aur-install python38
-
