@@ -1,4 +1,4 @@
-FROM greyltc/archlinux-aur:paru 
+FROM archlinux:latest
 
 RUN pacman-db-upgrade
 
@@ -10,8 +10,6 @@ RUN pacman -Syyu --noconfirm \
   nodejs npm neovim atuin fzf lazygit zellij lf \
   typst postgresql-libs \ 
   libxcursor ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono kitty
-
-RUN aur-install tomb
 
 RUN wget -O /tmp/host-spawn "https://github.com/1player/host-spawn/releases/download/1.5.0/host-spawn-x86_64"
 RUN mv /tmp/host-spawn /usr/bin/
