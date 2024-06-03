@@ -1,5 +1,5 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm python-virtualenv python-pipenv pixi rye
+RUN pacman -Syyu --noconfirm python-virtualenv python-pipenv rye
 
