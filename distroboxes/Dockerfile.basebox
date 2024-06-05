@@ -1,4 +1,4 @@
-FROM archlinux:latest
+FROM greyltc/archlinux-aur:paru
 
 RUN pacman-db-upgrade
 
