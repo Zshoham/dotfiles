@@ -4,10 +4,10 @@ sudo chown -R $USER:$USER /opt
 
 mkdir -p $HOME/.local/bin/ $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_STATE_HOME $XDG_CACHE_HOME
 
-sudo cp -a --update=all /opt/build_home/config/ $XDG_CONFIG_HOME
-sudo cp -a --update=all /opt/build_home/share/ $XDG_DATA_HOME
-sudo cp -a --update=all /opt/build_home/state/ $XDG_STATE_HOME
-sudo cp -a --update=all /opt/build_home/cache/ $XDG_CACHE_HOME
+sudo cp -a --update=all /opt/build_home/config/* $XDG_CONFIG_HOME
+sudo cp -a --update=all /opt/build_home/share/* $XDG_DATA_HOME
+sudo cp -a --update=all /opt/build_home/state/* $XDG_STATE_HOME
+sudo cp -a --update=all /opt/build_home/cache/* $XDG_CACHE_HOME
 
 if test -d /opt/build_home/bin/
   sudo cp -a --update=all /opt/build_home/bin/ $HOME/.local/bin/
