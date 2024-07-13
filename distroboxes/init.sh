@@ -13,7 +13,7 @@ if test -d /opt/build_home/bin/
   sudo cp -a --update=all /opt/build_home/bin/ $HOME/.local/bin/
 end
 
-for path in (fd $HOME/.local/ -t l)
+for path in (fd . $HOME/.local/ -t l)
   ln -fs "$(readlink $path | sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}')" $path
 end
 
