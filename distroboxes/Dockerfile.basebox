@@ -5,11 +5,10 @@ RUN pacman-db-upgrade
 RUN pacman -Syyu --noconfirm \
   fish bash-completion bc curl diffutils findutils glibc gnupg inetutils keyutils less lsof man-db man-pages \
   mlocate mtr ncurses nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata \
-  unzip util-linux util-linux-libs vte-common wget words xorg-xauth zip mesa opengl-driver vulkan-intel vte-common vulkan-radeon rust \
+  unzip util-linux util-linux-libs wget words xorg-xauth zip rust \
   starship bat lsd fd jq hexyl zoxide procs dust sd ripgrep duf chezmoi age git-delta glow btop \
   nodejs npm neovim atuin fzf lazygit zellij lf pixi \
-  typst postgresql-libs \ 
-  libxcursor ttf-jetbrains-mono ttf-nerd-fonts-symbols-mono kitty
+  typst postgresql-libs
 
 RUN wget -O /tmp/host-spawn "https://github.com/1player/host-spawn/releases/download/1.5.0/host-spawn-x86_64"
 RUN mv /tmp/host-spawn /usr/bin/
