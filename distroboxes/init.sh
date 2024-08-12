@@ -2,6 +2,19 @@
 
 sudo chown -R $USER:$USER /opt
 
+if not set -q $XDG_CONFIG_HOME
+  set XDG_CONFIG_HOME $HOME/.config
+end
+if not set -q $XDG_DATA_HOME
+  set XDG_DATA_HOME $HOME/.local/share
+end
+if not set -q $XDG_STATE_HOME
+  set XDG_STATE_HOME $HOME/.local/state
+end
+if not set -q $XDG_CACHE_HOME
+  set XDG_CACHE_HOME $HOME/.cache/
+end
+
 mkdir -p $HOME/.local/bin/ $XDG_CONFIG_HOME $XDG_DATA_HOME $XDG_STATE_HOME $XDG_CACHE_HOME
 
 sudo cp -a --update=all /opt/build_home/config/* $XDG_CONFIG_HOME
