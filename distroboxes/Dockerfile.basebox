@@ -7,7 +7,7 @@ RUN pacman -Syyu --noconfirm \
   mlocate mtr ncurses nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata \
   unzip util-linux util-linux-libs wget words xorg-xauth zip rust \
   starship bat lsd fd jq hexyl zoxide procs dust sd ripgrep duf chezmoi age git-delta glow btop \
-  nodejs npm neovim atuin fzf lazygit zellij lf pixi \
+  nodejs npm python neovim atuin fzf lazygit zellij lf pixi \
   typst postgresql-libs
 
 RUN wget -O /tmp/host-spawn "https://github.com/1player/host-spawn/releases/download/1.5.0/host-spawn-x86_64"
