@@ -2,6 +2,9 @@
 
 sudo chown -R $USER:$USER /opt
 
+bash miniforge3.sh -b -p /opt/miniforge3
+rm miniforge3.sh
+
 if not set -q $XDG_CONFIG_HOME
   set XDG_CONFIG_HOME $HOME/.config
 end

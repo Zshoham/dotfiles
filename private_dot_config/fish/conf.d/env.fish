@@ -30,14 +30,17 @@ set -gx PATH $PATH "$CARGO_HOME/bin"
 set -gx PATH $PATH "$PYENV_ROOT/bin"
 set -gx PATH $PATH "$PYENV_ROOT/shims"
 
-if test -f /opt/miniconda3/bin/conda
-    eval /opt/miniconda3/bin/conda "shell.fish" "hook" $argv | source
+if test -f /opt/miniforge3/bin/conda
+    eval /opt/miniforge3/bin/conda "shell.fish" "hook" $argv | source
 else
-    if test -f "/opt/miniconda3/etc/fish/conf.d/conda.fish"
-        . "/opt/miniconda3/etc/fish/conf.d/conda.fish"
+    if test -f "/opt/miniforge3/etc/fish/conf.d/conda.fish"
+        source "/opt/miniforge3/etc/fish/conf.d/conda.fish"
     else
-        set -x PATH "/opt/miniconda3/bin" $PATH
+        set -x PATH "/opt/miniforge3/bin" $PATH
     end
 end
 
+if test -f "/opt/miniforge3/etc/fish/conf.d/mamba.fish"
+  source "/opt/miniforge3/etc/fish/conf.d/mamba.fish"
+end
 
