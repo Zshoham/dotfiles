@@ -48,30 +48,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      - name: Get image file name
-        id: image-name
-        run: echo "name=basebox.image.$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
-
-      - name: Save image to file
-        run: |
-          docker save ghcr.io/zshoham/basebox:latest -o ${{steps.image-name.outputs.name}}
-
-      - name: Configure s3cmd
-        run: |
-          sudo apt install -y zstd s3cmd
-          echo "[default]" > ~/.s3cfg
-          echo "access_key = ${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.s3cfg
-          echo "secret_key = ${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.s3cfg
-          echo "host_base = ${{ secrets.AWS_ENDPOINT }}" >> ~/.s3cfg
-          echo "host_bucket = ${{ secrets.AWS_ENDPOINT }}" >> ~/.s3cfg
-          echo "bucket_location = Frankfurt" >> ~/.s3cfg
-      
-      - name: Upload image to s3
-        run: |
-          zstd ${{steps.image-name.outputs.name}}
-          s3cmd put ${{steps.image-name.outputs.name}}.zst s3://trialbucket
-
-
   publish-images:
     needs: publish-base
     runs-on: ubuntu-latest
