@@ -1,6 +1,8 @@
 #!/bin/fish
 
-sudo chown -R $USER:$USER /opt
+if test (id -u) -ne 0
+  sudo chown -R $USER:$USER /opt
+end
 
 bash miniforge3.sh -b -p /opt/miniforge3
 rm miniforge3.sh

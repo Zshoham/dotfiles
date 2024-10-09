@@ -17,6 +17,9 @@ RUN chmod +x /usr/bin/host-spawn
 
 WORKDIR /opt/
 
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    locale-gen
+
 RUN mkdir build_home
 COPY . dotfiles
 RUN cp dotfiles/distroboxes/init.sh init.sh
