@@ -11,8 +11,9 @@ window#waybar {
     margin: 5px;
 }
 
-#workspaces {
+.modules-center {
     background-color: #11111b;
+    color: #89b4fa;
     margin: 4px 4px;
     padding: 2px 10px;
     border-radius: 10px;
@@ -50,7 +51,6 @@ window#waybar {
 #clock,
 #pulseaudio,
 #bluetooth,
-#custom-music-player,
 #cpu,
 #tray,
 #language,
