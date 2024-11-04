@@ -55,10 +55,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - dockerfile: ./distroboxes/Dockerfile.pybox
-            image: ghcr.io/zshoham/pybox
-          - dockerfile: ./distroboxes/Dockerfile.cbox
-            image: ghcr.io/zshoham/cbox
+          - dockerfile: ./distroboxes/Dockerfile.yocto
+            image: ghcr.io/zshoham/yoctobox
     permissions:
       contents: read
       packages: write
