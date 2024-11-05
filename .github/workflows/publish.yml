@@ -57,6 +57,9 @@ jobs:
         include:
           - dockerfile: ./distroboxes/Dockerfile.yocto
             image: ghcr.io/zshoham/yoctobox
+          - dockerfile: ./distroboxes/Dockerfile.conda
+            image: ghcr.io/zshoham/condabox
+
     permissions:
       contents: read
       packages: write

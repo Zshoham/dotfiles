@@ -4,8 +4,13 @@ if test (id -u) -ne 0
   sudo chown -R $USER:$USER /opt
 end
 
-bash miniforge3.sh -b -p /opt/miniforge3
-rm miniforge3.sh
+if test -e conda.sh
+  bash conda.sh -b -p /opt/miniforge3
+  rm conda.sh
+else if test -e yocto.sh
+  bash yocto.sh -y -d /opt/yoctoenv
+  rm yocto.sh
+end
 
 if not set -q $XDG_CONFIG_HOME
   set XDG_CONFIG_HOME $HOME/.config
