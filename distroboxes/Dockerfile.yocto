@@ -1,4 +1,6 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
+RUN pacman -Syyu --noconfirm cpio dittstat
+
 RUN wget -O /opt/yocto.sh https://downloads.yoctoproject.org/releases//yocto/yocto-4.3.4/buildtools/x86_64-buildtools-extended-nativesdk-standalone-4.3.4.sh 
