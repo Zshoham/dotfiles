@@ -1,6 +1,0 @@
-ARG BASE_TAG=latest
-FROM ghcr.io/zshoham/basebox:${BASE_TAG}
-
-RUN pacman -Syyu --noconfirm ninja cmake gdb valgrind clang
-RUN source /opt/build.env; mkdir $XDG_CONFIG_HOME/gdb/
-RUN source /opt/build.env; wget -O $XDG_CONFIG_HOME/gdb/gef.py https://tinyurl.com/gef-main
