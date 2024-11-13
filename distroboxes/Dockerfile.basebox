@@ -5,7 +5,7 @@ RUN pacman-db-upgrade
 RUN pacman -Syyu --noconfirm \
   fish bash-completion bc curl diffutils findutils glibc gnupg inetutils keyutils less lsof man-db man-pages \
   ncurses nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo time tzdata \
-  unzip zip util-linux util-linux-libs wget words rust gdb gef \
+  unzip zip util-linux util-linux-libs wget words rust gdb expect \
   starship bat lsd fd jq sd zoxide ripgrep chezmoi age git-delta glow btop \
   nodejs npm python uv neovim atuin fzf lazygit zellij \
   typst kitty-terminfo
