@@ -59,6 +59,8 @@ jobs:
             image: ghcr.io/zshoham/yoctobox
           - dockerfile: ./distroboxes/Dockerfile.conda
             image: ghcr.io/zshoham/condabox
+          - dockerfile: ./distroboxes/Dockerfile.work
+            image: ghcr.io/zshoham/workbox
 
     permissions:
       contents: read
