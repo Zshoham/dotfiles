@@ -1,1 +1,2 @@
 IdentityFile ~/.ssh/shoham_sshid
+AddKeysToAgent yes
