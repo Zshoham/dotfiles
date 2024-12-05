@@ -7,7 +7,9 @@ end
 if test -e conda.sh
   bash conda.sh -b -p /opt/miniforge3
   rm conda.sh
-else if test -e yocto.sh
+end
+
+if test -e yocto.sh
   bash yocto.sh -y -d /opt/yoctoenv
   rm yocto.sh
 end
