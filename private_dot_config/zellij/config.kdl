@@ -3,13 +3,19 @@ pane_frames false
 theme "catppuccin-mocha"
 
 keybinds {
-  shared_except "locked" {
-      bind "Alt Enter" {
-          LaunchOrFocusPlugin "file:~/.config/zellij/plugins/room.wasm" {
-              floating true
-              ignore_case true
-              quick_jump true
-          }
-      }
-  }
+    shared {
+        bind "Alt Enter" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/room.wasm" {
+                floating true
+                ignore_case true
+                quick_jump true
+            }
+        }
+        bind "Alt y" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/zellij_forgot.wasm" {
+                "LOAD_ZELLIJ_BINDINGS" "true"
+                floating true
+            }
+        }
+    }
 }
