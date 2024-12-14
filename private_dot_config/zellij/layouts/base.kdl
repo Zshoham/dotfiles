@@ -3,18 +3,17 @@ layout {
         children
         pane size=1 borderless=true {
             plugin location="file:$HOME/.config/zellij/plugins/zjstatus.wasm" {
-                format_left   "{mode} #[fg=#89B4FA,bold]{session}"
+                format_left   "{mode} {session}"
                 format_center "{tabs}"
-                format_right  "{datetime}"
-                format_space  ""
 
-                border_enabled  "false"
-                border_char     "─"
-                border_format   "#[fg=#6C7086]{char}"
-                border_position "top"
-
-                mode_normal  "#[bg=blue] "
-                mode_tmux    "#[bg=#ffc387] "
+                mode_normal   "#[fg=#11111b,bg=blue,bold] {name} "
+                mode_locked   "#[fg=#11111b,bg=red,bold] {name} "
+                mode_pane     "#[fg=#11111b,bg=green,bold] {name} "
+                mode_tab      "#[fg=#11111b,bg=green,bold] {name} "
+                mode_resize   "#[fg=#11111b,bg=#fab387,bold] {name} "
+                mode_scroll   "#[fg=#11111b,bg=#fab387,bold] {name} "
+                mode_move     "#[fg=#11111b,bg=#fab387,bold] {name} "
+                mode_session  "#[fg=#11111b,bg=#cba6f7,bold] {name} "
 
                 tab_normal              "#[fg=#cdd6f4] {name} "
                 tab_normal_fullscreen   "#[fg=#cdd6f4] {fullscreen_indicator}{name} "
@@ -27,10 +26,6 @@ layout {
                 tab_sync_indicator       "⇌ "
                 tab_fullscreen_indicator "⛶ "
                 tab_floating_indicator   "⏏ "
-
-                datetime        "#[fg=#6C7086,bold] {format} "
-                datetime_format "%A, %d %b %Y %H:%M"
-                datetime_timezone "Europe/Berlin"
             }
         }
     }
