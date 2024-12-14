@@ -1,6 +1,6 @@
 FROM greyltc/archlinux-aur:paru
 
-RUN pacman-db-upgrade 
+RUN pacman-db-upgrade
 
 RUN pacman -Syyu --noconfirm \
   fish bash-completion bc curl diffutils findutils glibc gnupg inetutils keyutils less lsof man-db man-pages \
