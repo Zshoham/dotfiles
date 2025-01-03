@@ -1,8 +1,7 @@
 FROM greyltc/archlinux-aur:paru
 
-RUN pacman-db-upgrade
-
-RUN pacman -Syyu --noconfirm \
+RUN pacman-db-upgrade && \
+  pacman -Syyu --noconfirm \
   fish bash-completion bc curl diffutils findutils glibc gnupg inetutils keyutils less lsof man-db man-pages \
   ncurses nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo time tzdata \
   unzip zip util-linux util-linux-libs wget words rust gdb expect \
@@ -10,24 +9,25 @@ RUN pacman -Syyu --noconfirm \
   nodejs npm python uv neovim atuin fzf lazygit zellij \
   typst kitty-terminfo
 
-RUN wget -O /tmp/host-spawn "https://github.com/1player/host-spawn/releases/download/1.5.0/host-spawn-x86_64"
-RUN mv /tmp/host-spawn /usr/bin/
-RUN chmod +x /usr/bin/host-spawn
+RUN wget -q -O /tmp/host-spawn "https://github.com/1player/host-spawn/releases/download/1.5.0/host-spawn-x86_64" && \
+  mv /tmp/host-spawn /usr/bin/ && \
+  chmod +x /usr/bin/host-spawn
 
 WORKDIR /opt/
 
 RUN mkdir build_home
 COPY . dotfiles
-RUN cp -r dotfiles/distroboxes/scripts .
-RUN cp dotfiles/distroboxes/init.sh init.sh
-RUN cp dotfiles/distroboxes/build.env build.env
-RUN cp dotfiles/private_dot_local/bin/executable_update_nvim update_nvim
-RUN chmod +x update_nvim
-RUN chmod +x init.sh
-RUN chmod +x build.env
-RUN chmod -R +x scripts
 
-RUN scripts/create_user.sh
-
-RUN source /opt/build.env; scripts/zellij.sh 
-RUN source /opt/build.env; scripts/neovim.sh
+RUN cp -r dotfiles/distroboxes/scripts . && \
+  cp dotfiles/distroboxes/init.sh init.sh && \
+  cp dotfiles/distroboxes/build.env build.env && \
+  cp dotfiles/private_dot_local/bin/executable_update_nvim update_nvim && \
+  chmod +x update_nvim && \
+  chmod +x init.sh && \
+  chmod +x build.env && \
+  chmod -R +x scripts && \
+  scripts/create_user.sh && \
+  source /opt/build.env && \
+  scripts/zellij.sh && \
+  source /opt/build.env && \
+  scripts/neovim.sh

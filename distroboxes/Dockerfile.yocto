@@ -1,6 +1,4 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm chrpath rpcsvc-proto
-
 RUN scripts/yocto.sh

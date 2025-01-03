@@ -1,5 +1,12 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN scripts/yocto.sh
-RUN scripts/conda.sh
+# enable multilib repo for multilib-devel
+RUN echo "[multilib]" >> /etc/pacman.conf && \
+  echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
+  # disable-sandbox to support running on older kernels - https://bbs.archlinux.org/viewtopic.php?id=299402
+  pacman --disable-sandbox -Syyu --noconfirm multilib-devel && \
+  aur-install rsyslog
+
+RUN scripts/yocto.sh && \
+  scripts/conda.sh
