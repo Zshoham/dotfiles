@@ -1,4 +1,0 @@
-ARG BASE_TAG=latest
-FROM ghcr.io/zshoham/basebox:${BASE_TAG}
-
-RUN scripts/conda.sh

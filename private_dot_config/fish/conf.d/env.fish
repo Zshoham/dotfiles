@@ -14,7 +14,7 @@ if not set -q PIPX_HOME
 end
 
 set -gx CARGO_HOME "$XDG_DATA_HOME/cargo"
-set -gx RUSTUP_HOME "$XDG_DATA_HOME/rusup"
+set -gx RUSTUP_HOME "$XDG_DATA_HOME/rustup"
 set -gx GOPATH "$XDG_DATA_HOME/golang"
 set -gx FNM_DIR "$XDG_DATA_HOME/fnm"
 set -gx JULIA_DEPOT_PATH "$XDG_DATA_HOME/julia"
