@@ -1,0 +1,48 @@
+# Lines configured by zsh-newuser-install
+setopt notify
+unsetopt beep
+bindkey -e
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename "${XDG_CONFIG_HOME}/zsh/zshrc"
+zstyle ":completion:*" menu no
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+source "${XDG_CONFIG_HOME}/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "${XDG_CONFIG_HOME}/zsh/catppuccin-theme/themes/catppuccin_mocha-zsh-syntax-highlighting.zsh"
+source "${XDG_CONFIG_HOME}/zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source "${XDG_CONFIG_HOME}/zsh/fzf-tab/fzf-tab.zsh"
+
+eval "$(fzf --zsh)"
+eval "$(starship init zsh)"
+eval "$(zoxide init --cmd cd zsh)"
+eval "$(atuin init zsh)"
+
+export FZF_DEFAULT_OPTS=" \
+--color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+--color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+--color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+--color=selected-bg:#45475a \
+--multi"
+
+
+alias cat="bat"
+alias ls="lsd"
+alias ll="ls -la"
+alias tree="lsd --tree"
+alias files="nautilus"
+alias dotfiles="chezmoi"
+alias md="glow"
+alias rm="rm -i"
+alias cp="cp -i"
+alias mv="mv -i"
+
+alias wget="wget --hsts-file '$XDG_DATA_HOME'/wget-hsts"
+
+# ssh
+alias ssh-start='sudo systemctl start ssh.service'
+alias ssh-stop='sudo systemctl stop ssh.service'
+alias ssh-status='sudo systemctl status ssh.service'
