@@ -1,6 +1,6 @@
 FROM greyltc/archlinux-aur:paru
 
-RUN pacman-db-upgrade && \ 
+RUN pacman-db-upgrade && \
   pacman -Syyu --noconfirm \
 	bash-completion bc curl diffutils findutils glibc gnupg iputils inetutils keyutils less lsof man-db man-pages mlocate mtr ncurses \
   nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata unzip \
@@ -30,3 +30,5 @@ RUN cp -r dotfiles/distroboxes/scripts . && \
   scripts/rust.sh && \
   scripts/zellij.sh && \
   scripts/neovim.sh
+
+RUN pacman -Scc --noconfirm

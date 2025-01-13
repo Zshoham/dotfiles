@@ -10,3 +10,6 @@ RUN echo "[multilib]" >> /etc/pacman.conf && \
 
 RUN scripts/yocto.sh && \
   scripts/conda.sh
+
+RUN pacman -Scc --noconfirm
+
