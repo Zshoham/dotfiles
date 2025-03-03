@@ -53,25 +53,9 @@ done
 kill $NVIM_PID 2>/dev/null
 echo "Done with treesitter and mason"
 
-CHECK_BLINK="lua require('blink.cmp.fuzzy.download').is_downloaded(function(v) print(v) end)"
-
-start_time=$(date +%s)
+nvim --headless -c 'lua require("blink.cmp").setup()' &
+NVIM_PID=$!
 echo "Waiting for blink to download"
-#wait for blink to finish
-while true; do
-  blink_output=$(nvim --headless -c "$CHECK_BLINK" -c "quit" 2>&1)
-  if [ "$blink_output" = "true" ]; then
-    break
-  fi
-
-  # Check for timeout
-  current_time=$(date +%s)
-  if [ $((current_time - start_time)) -gt $timeout ]; then
-    echo "Timeout reached. Forcing exit."
-    break
-  fi
-
-  sleep 5
-done
-
+sleep 60
+kill $NVIM_PID 2>dev/null
 echo "Done updating"
