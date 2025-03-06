@@ -58,4 +58,7 @@ NVIM_PID=$!
 echo "Waiting for blink to download"
 sleep 120
 kill $NVIM_PID 2>/dev/null
+
+# Remove log files after we are done.
+rm -f "$TREESITTER_LOG_FILE" "$MASON_LOG_FILE"
 echo "Done updating"
