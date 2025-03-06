@@ -56,6 +56,6 @@ echo "Done with treesitter and mason"
 nvim --headless -c 'lua require("blink.cmp").setup()' &
 NVIM_PID=$!
 echo "Waiting for blink to download"
-sleep 60
-kill $NVIM_PID 2>dev/null
+sleep 120
+kill $NVIM_PID 2>/dev/null
 echo "Done updating"
