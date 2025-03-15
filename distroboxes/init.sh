@@ -47,6 +47,7 @@ sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}' (rg -l /opt/build_home $HOM
 chezmoi init --apply dotfiles/
 
 bat cache --build
+fish_config theme save "Catppuccin"
 
 sudo rm -rf dotfiles/
 sudo rm build.env
