@@ -1,2 +1,2 @@
-IdentityFile ~/.ssh/shoham_sshid
+IdentityFile ~/.ssh/{{ .ssh_key }}
 AddKeysToAgent yes
