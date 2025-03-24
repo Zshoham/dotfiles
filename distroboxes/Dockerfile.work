@@ -6,7 +6,7 @@ RUN echo "[multilib]" >> /etc/pacman.conf && \
   echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
   # disable-sandbox to support running on older kernels - https://bbs.archlinux.org/viewtopic.php?id=299402
   pacman --disable-sandbox -Syyu --noconfirm multilib-devel && \
-  aur-install rsyslog
+  aur-install rsyslog flamegraph-git
 
 RUN scripts/yocto.sh && \
   scripts/conda.sh
