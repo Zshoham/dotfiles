@@ -1,6 +1,8 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
+RUN pacman -Syyu --noconfirm perf strace valgrind
+
 # enable multilib repo for multilib-devel
 RUN echo "[multilib]" >> /etc/pacman.conf && \
   echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
