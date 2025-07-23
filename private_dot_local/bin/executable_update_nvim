@@ -53,7 +53,7 @@ done
 kill $NVIM_PID 2>/dev/null
 echo "Done with treesitter and mason"
 
-nvim --headless -c 'lua require("blink.cmp").setup()' &
+nvim --headless -c 'lua require("blink.cmp.fuzzy.download").ensure_downloaded(function(err, fuzzy) end)' &
 NVIM_PID=$!
 echo "Waiting for blink to download"
 sleep 120
