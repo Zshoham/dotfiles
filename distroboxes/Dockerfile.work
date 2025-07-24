@@ -3,6 +3,9 @@ FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
 RUN pacman -Syyu --noconfirm perf strace valgrind
 
+# add libcrypt compatabilty for 1.x
+RUN pacman -Syyu --noconfirm libxcrypt-compat
+
 # enable multilib repo for multilib-devel
 RUN echo "[multilib]" >> /etc/pacman.conf && \
   echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
