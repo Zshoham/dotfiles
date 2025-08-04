@@ -4,8 +4,8 @@ RUN pacman-db-upgrade && \
   pacman -Syyu --noconfirm \
   bash-completion bc curl diffutils findutils glibc gnupg iputils inetutils keyutils less lsof man-db man-pages mlocate mtr ncurses \
   nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata unzip \
-  util-linux util-linux-libs vte-common wget words xorg-xauth zip mesa vulkan-intel vulkan-radeon \
-  fish starship bat lsd fd sd jq zoxide ripgrep chezmoi age git-delta mergiraf glow btop \
+  util-linux util-linux-libs vte-common wget words zip \
+  fish starship bat lsd fd sd jq zoxide ripgrep chezmoi age git-delta mergiraf jujutsu glow btop \
   expect nodejs npm python neovim atuin fzf zellij kitty-terminfo wl-clipboard xclip
 
 RUN wget -q -O /tmp/host-spawn "https://github.com/1player/host-spawn/releases/download/v1.6.1/host-spawn-x86_64" && \
