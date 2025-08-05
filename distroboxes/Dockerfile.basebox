@@ -4,7 +4,7 @@ RUN pacman-db-upgrade && \
   pacman -Syyu --noconfirm \
   bash-completion bc curl diffutils findutils glibc gnupg iputils inetutils keyutils less lsof man-db man-pages mlocate mtr ncurses \
   nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata unzip \
-  util-linux util-linux-libs vte-common wget words zip \
+  util-linux util-linux-libs vte-common wget words zip moreutils \
   fish starship bat lsd fd sd jq zoxide ripgrep chezmoi age git-delta mergiraf jujutsu glow btop \
   expect nodejs npm python neovim atuin fzf zellij kitty-terminfo wl-clipboard xclip
 
