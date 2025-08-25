@@ -1,7 +1,7 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm perf strace valgrind
+RUN pacman -Syyu --noconfirm perf strace valgrind ffmpeg
 
 # add libcrypt compatabilty for 1.x
 RUN pacman -Syyu --noconfirm libxcrypt-compat
@@ -11,7 +11,7 @@ RUN echo "[multilib]" >> /etc/pacman.conf && \
   echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
   # disable-sandbox to support running on older kernels - https://bbs.archlinux.org/viewtopic.php?id=299402
   pacman --disable-sandbox -Syyu --noconfirm multilib-devel && \
-  aur-install rsyslog flamegraph-git
+  aur-install rsyslog
 
 RUN scripts/yocto.sh && \
   scripts/conda.sh
