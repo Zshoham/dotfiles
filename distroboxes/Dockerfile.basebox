@@ -2,11 +2,11 @@ FROM greyltc/archlinux-aur:paru
 
 RUN pacman-db-upgrade && \
   pacman -Syyu --noconfirm \
-  bash-completion bc curl diffutils findutils glibc gnupg iputils inetutils keyutils less lsof man-db man-pages mlocate mtr ncurses \
-  nss-mdns openssh pigz pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata unzip \
-  util-linux util-linux-libs vte-common wget words zip moreutils \
+  bc curl diffutils findutils glibc gnupg iputils inetutils keyutils less lsof ncurses \
+  openssh pinentry procps-ng rsync shadow sudo tcpdump time traceroute tree tzdata unzip \
+  util-linux util-linux-libs wget words zip moreutils \
   fish starship bat lsd fd sd jq zoxide ripgrep chezmoi age git-delta mergiraf jujutsu glow btop \
-  expect nodejs npm python neovim atuin fzf zellij kitty-terminfo wl-clipboard xclip
+  expect nodejs npm python neovim atuin fzf zellij kitty-terminfo
 
 RUN wget -q -O /tmp/host-spawn "https://github.com/1player/host-spawn/releases/download/v1.6.1/host-spawn-x86_64" && \
   mv /tmp/host-spawn /usr/bin/ && \
