@@ -29,6 +29,7 @@ RUN cp -r dotfiles/distroboxes/scripts . && \
   source /opt/build.env && \
   scripts/rust.sh && \
   scripts/zellij.sh && \
-  scripts/neovim.sh
+  scripts/neovim.sh && \
+  scripts/gef.sh
 
 RUN pacman -Scc --noconfirm
