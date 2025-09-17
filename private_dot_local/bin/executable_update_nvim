@@ -8,10 +8,9 @@ MASON_LOG_FILE="$XDG_STATE_HOME/nvim/mason.log"
 rm -f "$TREESITTER_LOG_FILE" "$MASON_LOG_FILE"
 
 UPDATE_LAZY="lua require('lazy').update()"
-UPDATE_MASON="require('mason-lspconfig.ensure_installed')()"
 
 # Run Neovim with TreeSitter update in the background
-nvim --headless -c "$UPDATE_LAZY; $UPDATE_MASON;" &>"$TREESITTER_LOG_FILE" &
+nvim --headless -c "$UPDATE_LAZY;" &>"$TREESITTER_LOG_FILE" &
 NVIM_PID=$!
 
 start_time=$(date +%s)
@@ -23,19 +22,11 @@ while true; do
     echo "Neovim process has exited."
     break
   fi
-  
-  treesitter_finished=$(rg --pcre2 -o '\[nvim-treesitter] \[([0-9]+)/\1\D' "$TREESITTER_LOG_FILE")
-  mason_finished=
-  if [ -f "$MASON_LOG_FILE" ]; then
-    mason_start_count=$(grep -c 'Executing installer' "$MASON_LOG_FILE")
-    mason_installed_count=$(grep -c 'Installation succeeded' "$MASON_LOG_FILE")
-    if [ "$mason_start_count" = "$mason_installed_count" ]; then
-      mason_finished=true
-    fi
-  fi
 
-  echo "ts: $treesitter_finished, mson: $mason_finished, mson start: $mason_start_count, mson done: $mason_installed_count"
-  if [ -n "${treesitter_finished// }" ] && [[ $mason_finished = true ]]; then
+  treesitter_finished=$(rg --pcre2 -o '\[nvim-treesitter].* Installed (\d+)\/\1' "$TREESITTER_LOG_FILE")
+
+  if [ -n "${treesitter_finished// }" ]; then
+    echo "tree sitter finished - ${treesitter_finished}"
     break
   fi
 
@@ -49,9 +40,11 @@ while true; do
   sleep 5
 done
 
-# done updating mason and treesitter
+# done updating treesitter
 kill $NVIM_PID 2>/dev/null
-echo "Done with treesitter and mason"
+echo "Done with treesitter"
+
+nvim --headless -c "lua require('updater').update_mason()" +qa 
 
 nvim --headless -c 'lua require("blink.cmp.fuzzy.download").ensure_downloaded(function(err, fuzzy) end)' &
 NVIM_PID=$!
