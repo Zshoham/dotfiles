@@ -1,57 +1,5 @@
 #!/bin/bash
 
-# Set the log file path
-TREESITTER_LOG_FILE="/tmp/nvim_treesitter_update.log"
-MASON_LOG_FILE="$XDG_STATE_HOME/nvim/mason.log"
+nvim --headless -c "lua require('updater').update_all()" +qa
 
-# Remove the old log file if it exists
-rm -f "$TREESITTER_LOG_FILE" "$MASON_LOG_FILE"
-
-UPDATE_LAZY="lua require('lazy').update()"
-
-# Run Neovim with TreeSitter update in the background
-nvim --headless -c "$UPDATE_LAZY;" &>"$TREESITTER_LOG_FILE" &
-NVIM_PID=$!
-
-start_time=$(date +%s)
-timeout=600 # 10 minutes timeout
-
-# Wait for the update to complete
-while true; do
-  if ! kill -0 $NVIM_PID 2>/dev/null; then
-    echo "Neovim process has exited."
-    break
-  fi
-
-  treesitter_finished=$(rg --pcre2 -o '\[nvim-treesitter].* Installed (\d+)\/\1' "$TREESITTER_LOG_FILE")
-
-  if [ -n "${treesitter_finished// }" ]; then
-    echo "tree sitter finished - ${treesitter_finished}"
-    break
-  fi
-
-  # Check for timeout
-  current_time=$(date +%s)
-  if [ $((current_time - start_time)) -gt $timeout ]; then
-    echo "Timeout reached. Forcing exit."
-    break
-  fi
-
-  sleep 5
-done
-
-# done updating treesitter
-kill $NVIM_PID 2>/dev/null
-echo "Done with treesitter"
-
-nvim --headless -c "lua require('updater').update_mason()" +qa 
-
-nvim --headless -c 'lua require("blink.cmp.fuzzy.download").ensure_downloaded(function(err, fuzzy) end)' &
-NVIM_PID=$!
-echo "Waiting for blink to download"
-sleep 120
-kill $NVIM_PID 2>/dev/null
-
-# Remove log files after we are done.
-rm -f "$TREESITTER_LOG_FILE" "$MASON_LOG_FILE"
 echo "Done updating"
