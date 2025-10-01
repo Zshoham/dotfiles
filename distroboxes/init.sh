@@ -39,7 +39,7 @@ if test -d /opt/build_home/bin/
 end
 
 for path in (fd . $HOME/.local/ -t l)
-  ln -fs "$(readlink $path | sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}')" $path
+  ln -fsn "$(readlink $path | sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}')" $path
 end
 
 sd "/opt/build_home/(?P<dir>)" $HOME'/.local/${dir}' (rg -l /opt/build_home $HOME/.local/)
