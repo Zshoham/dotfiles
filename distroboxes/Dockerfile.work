@@ -1,7 +1,7 @@
 ARG BASE_TAG=latest
 FROM ghcr.io/zshoham/basebox:${BASE_TAG}
 
-RUN pacman -Syyu --noconfirm perf strace valgrind ffmpeg
+RUN pacman -Syyu --noconfirm perf strace valgrind ffmpeg gdb
 
 # add libcrypt compatabilty for 1.x
 RUN pacman -Syyu --noconfirm libxcrypt-compat
