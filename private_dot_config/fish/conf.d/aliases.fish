@@ -7,6 +7,7 @@ alias md glow
 alias rm "rm -i"
 alias cp "cp -i"
 alias mv "mv -i"
+alias mamba micromamba
 
 function tomb
     zsh -c "DISPLAY= tomb $argv"

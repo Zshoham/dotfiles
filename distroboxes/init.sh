@@ -4,10 +4,6 @@ if test (id -u) -ne 0
   sudo chown -R $USER:$USER /opt
 end
 
-if test -e conda.sh
-  bash conda.sh -b -p /opt/miniforge3
-  rm conda.sh
-end
 
 if test -e yocto.sh
   bash yocto.sh -y -d /opt/yoctoenv
