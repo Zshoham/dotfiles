@@ -26,7 +26,8 @@ RUN cp -r dotfiles/distroboxes/scripts . && \
   chmod +x build.env && \
   chmod -R +x scripts && \
   scripts/create_user.sh && \
-  source /opt/build.env && \
+  . /opt/build.env && \
+  scripts/replay.sh && \
   scripts/rust.sh && \
   scripts/zellij.sh && \
   scripts/neovim.sh && \
