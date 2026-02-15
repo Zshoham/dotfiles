@@ -13,7 +13,7 @@ RUN echo "[multilib]" >> /etc/pacman.conf && \
   pacman --disable-sandbox -Syyu --noconfirm multilib-devel && \
   aur-install rsyslog
 
-RUN scripts/yocto.sh && scripts/conda.sh
+RUN scripts/yocto.sh && scripts/conda.sh && scripts/clai.sh
 
 RUN pacman -Scc --noconfirm
 
