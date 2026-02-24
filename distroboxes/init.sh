@@ -8,6 +8,10 @@ end
 if test -e yocto.sh
   bash yocto.sh -y -d /opt/yoctoenv
   rm yocto.sh
+  # remove ssl related environement variables,
+  # even when using yoctoenv we want to use
+  # our own certificates. 
+  sed -i '/ssl/d' /opt/yoctoenv/environment-setup-x86_64-pokysdk-linux
 end
 
 if not set -q $XDG_CONFIG_HOME
