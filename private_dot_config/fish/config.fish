@@ -2,8 +2,8 @@ export SHELL=(which fish)
 
 set fish_greeting
 
-set -gx MAMBA_EXE "/usr/bin/micromamba"
-if test -f $MAMBA_EXE
+if command -q micromamba
+  set -gx MAMBA_EXE (command -s micromamba)
   set -gx MAMBA_ROOT_PREFIX "/home/build/.local/share/mamba"
   $MAMBA_EXE shell hook --shell fish --root-prefix $MAMBA_ROOT_PREFIX | source
 end

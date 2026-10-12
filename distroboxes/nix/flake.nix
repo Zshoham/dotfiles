@@ -10,25 +10,28 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+
+      mkContainer =
+        name:
+        nixpkgs.lib.nixosSystem {
+          modules = [
+            ./container.nix
+            {
+              nixpkgs.hostPlatform = system;
+              networking.hostName = name;
+              ${name}.enable = true;
+            }
+          ];
+        };
     in
     {
-      nixosModules = {
-        # The basebox tools, for use directly on a NixOS host.
-        basebox = ./basebox/module.nix;
-        # Declares the basebox container on a NixOS host.
-        basebox-container = ./basebox/host.nix;
-      };
+      nixosModules.default = ./module.nix;
 
-      # Standalone container system, for imperative nixos-container use:
-      #   sudo nixos-container create basebox --flake .#basebox
-      nixosConfigurations.basebox = nixpkgs.lib.nixosSystem {
-        modules = [
-          ./basebox/container.nix
-          { nixpkgs.hostPlatform = system; }
-        ];
+      # sudo nixos-container create workbox --flake .#workbox
+      nixosConfigurations = {
+        basebox = mkContainer "basebox";
+        workbox = mkContainer "workbox";
       };
-
-      packages.${system}.basebox = self.nixosConfigurations.basebox.config.system.build.toplevel;
 
       formatter.${system} = pkgs.nixfmt;
     };

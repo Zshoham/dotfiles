@@ -1,56 +1,52 @@
 # Nix distroboxes
 
-NixOS replacements for the Arch based distrobox images in this directory.
-The flake is standalone and does not depend on the rest of the repo.
+The programs from the distrobox Dockerfiles as a NixOS module. The flake is
+standalone and does not depend on the rest of the repo. Programs are
+configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
 
-## basebox
+- `basebox.enable`: programs from `Dockerfile.basebox`
+- `workbox.enable`: programs from `Dockerfile.work`, implies `basebox`
 
-The tools from `Dockerfile.basebox` as a NixOS module (`basebox/module.nix`).
-Files that the Arch image downloads at build time (zellij plugins, gef,
-replay.fish) are pinned and packaged into `/run/current-system/sw/share`.
+`claude-code` (workbox) is unfree, so it has to be allowed in the host's
+nixpkgs config.
 
-### On a NixOS host
+## On a NixOS host
 
 ```nix
 {
   inputs.boxes.url = "github:Zshoham/dotfiles?dir=distroboxes/nix";
 
   # in the system modules
-  imports = [ inputs.boxes.nixosModules.basebox ];
-  basebox.enable = true;
+  imports = [ inputs.boxes.nixosModules.default ];
+  workbox.enable = true;
 }
 ```
 
-### As a NixOS container
+## As a NixOS container
 
-Declared on the host, sharing the network and the user's home directory
-(the user needs a fixed `uid`):
+Imperatively from the flake (user `box`, passwordless sudo):
+
+```sh
+sudo nixos-container create workbox --flake github:Zshoham/dotfiles?dir=distroboxes/nix#workbox
+sudo nixos-container start workbox
+machinectl shell box@workbox
+```
+
+Or declared on the host, sharing the network and home directory:
 
 ```nix
-{
-  imports = [ inputs.boxes.nixosModules.basebox-container ];
-  basebox.container = {
-    enable = true;
-    user = "shoham";
-    # config = { ... };  # extra configuration for the container
+containers.workbox = {
+  bindMounts.home = { hostPath = "/home/shoham"; isReadOnly = false; };
+  config = { pkgs, ... }: {
+    imports = [ inputs.boxes.nixosModules.default ];
+    workbox.enable = true;
+    users.users.shoham = {
+      isNormalUser = true;
+      uid = 1000; # same as on the host
+      extraGroups = [ "wheel" ];
+      shell = pkgs.fish;
+    };
+    system.stateVersion = "26.05";
   };
-}
+};
 ```
-
-```sh
-sudo nixos-container start basebox
-machinectl shell shoham@basebox
-```
-
-Or imperatively from the flake (creates user `basebox`, uid 1000):
-
-```sh
-sudo nixos-container create basebox --flake github:Zshoham/dotfiles?dir=distroboxes/nix#basebox
-sudo nixos-container start basebox
-```
-
-### Home setup
-
-`basebox-init` replaces `init.sh`: it applies the dotfiles with chezmoi,
-links the zellij plugins and gef into `~/.config`, installs the stable rust
-toolchain with rustup and sets up the neovim config.
