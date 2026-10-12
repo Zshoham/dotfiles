@@ -51,7 +51,6 @@ in
       basebox.enable = true;
 
       environment.systemPackages = with pkgs; [
-        claude-code
         ffmpeg
         (lib.hiPrio gcc_multi)
         gdb
@@ -59,7 +58,6 @@ in
         glab
         ltrace
         micromamba
-        opencode
         perf
         strace
         valgrind

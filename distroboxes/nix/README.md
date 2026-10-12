@@ -7,9 +7,6 @@ configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
 - `basebox.enable`: programs from `Dockerfile.basebox`
 - `workbox.enable`: programs from `Dockerfile.work`, implies `basebox`
 
-`claude-code` (workbox) is unfree, so it has to be allowed in the host's
-nixpkgs config.
-
 With `workbox`, the `yocto` command enters an environment for building with
 yocto (`yocto.nix`), in place of the buildtools-extended SDK: an FHS
 environment with the same toolchain (gcc 13) and the yocto host tools.

@@ -1,6 +1,6 @@
 # A NixOS container with a single user, used by the nixosConfigurations in
 # flake.nix.
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [ ./module.nix ];
@@ -19,7 +19,6 @@
     "nix-command"
     "flakes"
   ];
-  nixpkgs.config.allowUnfreePredicate = pkg: lib.getName pkg == "claude-code";
 
   system.stateVersion = "26.05";
 }
