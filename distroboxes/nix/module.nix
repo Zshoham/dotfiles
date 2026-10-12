@@ -4,8 +4,9 @@
 #   workbox.enable - Dockerfile.work (implies basebox)
 #
 # The packages, and the configuration moved over from chezmoi so far, are
-# defined in packages/ and config/. Takes the wrappers flake from flake.nix.
-{ wrappers }:
+# defined in packages/ and config/. Takes the flake inputs it needs from
+# flake.nix.
+{ wrappers, nvim-config }:
 {
   config,
   lib,
@@ -17,7 +18,7 @@
 let
   cfg = config.basebox;
   packages = import ./packages {
-    inherit pkgs wrappers;
+    inherit pkgs wrappers nvim-config;
     inherit (cfg) identity;
   };
 in

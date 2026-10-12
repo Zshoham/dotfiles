@@ -33,8 +33,27 @@ don't read anything from `~/.config`:
 | git      | `config/git`      | user from `basebox.identity`, delta on its PATH |
 | jujutsu  | `config/jj`       | user from `basebox.identity` |
 | kitty    | `config/kitty`    | flake package only, not part of the boxes |
+| neovim   | (own repo)        | external dependencies from nix, see below |
 | starship | `config/starship.toml` | `starship init` points at the wrapper |
 | zellij   | `config/zellij`   | plugins (zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot from `packages/zellij-plugins.nix`) from the store |
+
+### neovim
+
+The neovim config itself stays in its own repo (cloned to `~/.config/nvim`
+by chezmoi), but its external dependencies come from nix
+(`packages/neovim`), read from the config's `external.json` through the
+`nvim-config` flake input:
+
+- the tools it installs with mason are on neovim's PATH, mapped to nixpkgs
+  in `packages/neovim/tools.nix` (the build fails for an unmapped tool)
+- the tree-sitter parsers and queries are in a prebuilt nvim-treesitter
+  install directory (the build fails for an unknown language)
+- nvim-treesitter, blink.cmp (with its Rust fuzzy matcher),
+  markdown-preview.nvim and gitlab.nvim (with its Go server) come from nix
+
+The wrapper passes their locations in `vim.g.nix`, and the config's
+`lua/plugins/nix.lua` then turns off mason and uses them. Without the
+wrapper, the config installs everything itself as before.
 
 `basebox.identity.name` and `basebox.identity.email` default to Zshoham /
 ShohamZarfti@gmail.com.
