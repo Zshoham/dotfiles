@@ -8,7 +8,7 @@
 
 let
   configDir = pkgs.runCommand "zellij-config" { } ''
-    cp -r ${../config/zellij} $out
+    cp -r ${../../config/zellij} $out
     chmod -R u+w $out
     substituteInPlace $out/config.kdl $out/layouts/base.kdl \
       --replace-fail @plugins@ ${zellij-plugins}/share/zellij/plugins

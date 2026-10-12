@@ -15,11 +15,27 @@
 }:
 
 let
-  packages = import ./packages { inherit pkgs wrappers; };
+  cfg = config.basebox;
+  packages = import ./packages {
+    inherit pkgs wrappers;
+    inherit (cfg) identity;
+  };
 in
 {
   options = {
     basebox.enable = lib.mkEnableOption "the basebox programs";
+    basebox.identity = {
+      name = lib.mkOption {
+        type = lib.types.str;
+        default = "Zshoham";
+        description = "Name used by git and jujutsu.";
+      };
+      email = lib.mkOption {
+        type = lib.types.str;
+        default = "ShohamZarfti@gmail.com";
+        description = "Email used by git and jujutsu.";
+      };
+    };
     workbox.enable = lib.mkEnableOption "the workbox programs";
   };
 
@@ -29,7 +45,7 @@ in
 
       programs.fish = {
         enable = true;
-        package = packages.fish;
+        package = packages.programs.fish;
       };
 
       environment.pathsToLink = [ "/share/dict" ];

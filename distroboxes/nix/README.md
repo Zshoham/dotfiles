@@ -20,17 +20,28 @@ bitbake core-image-minimal
 
 ## Configuration
 
-Configuration is moving from chezmoi into this flake, packaged with the
-programs using [wrappers](https://github.com/Lassulus/wrappers):
+Configuration is moving from chezmoi into this flake. The config files are
+in `config/`, and `packages/programs/` wraps each program with its config
+using [wrappers](https://github.com/Lassulus/wrappers), so the nix versions
+don't read anything from `~/.config`:
 
-- zellij: the config and layouts are in `config/zellij`, with the plugins
-  (zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot built in
-  `packages/zellij-plugins.nix`) referenced from the store. The nix zellij
-  does not read `~/.config/zellij`. Until chezmoi is gone, the dotfiles
-  render the same files for the Arch boxes, with the plugins in
-  `~/.config/zellij/plugins`.
-- fish: finds replay.fish through `XDG_DATA_DIRS`; its config still comes
-  from chezmoi.
+| program  | config            | notes |
+|----------|-------------------|-------|
+| bat      | `config/bat`      | theme cache built at build time |
+| btop     | `config/btop`     | |
+| fish     | (chezmoi)         | finds replay.fish through `XDG_DATA_DIRS` |
+| git      | `config/git`      | user from `basebox.identity`, delta on its PATH |
+| jujutsu  | `config/jj`       | user from `basebox.identity` |
+| kitty    | `config/kitty`    | flake package only, not part of the boxes |
+| starship | `config/starship.toml` | `starship init` points at the wrapper |
+| zellij   | `config/zellij`   | plugins (zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot from `packages/zellij-plugins.nix`) from the store |
+
+`basebox.identity.name` and `basebox.identity.email` default to Zshoham /
+ShohamZarfti@gmail.com.
+
+Until chezmoi is gone, the dotfiles include the same files for the Arch
+boxes (zellij with its plugins in `~/.config/zellij/plugins`, git and jj
+with the user from the chezmoi prompts).
 
 ## Without changing the system
 

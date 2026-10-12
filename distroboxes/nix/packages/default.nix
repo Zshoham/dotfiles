@@ -1,7 +1,15 @@
 # The packages of the boxes, as named groups shared by the NixOS module, the
 # box environments and the yocto environment, plus the packages that are not
 # in nixpkgs.
-{ pkgs, wrappers }:
+{
+  pkgs,
+  wrappers,
+  # used by git and jujutsu
+  identity ? {
+    name = "Zshoham";
+    email = "ShohamZarfti@gmail.com";
+  },
+}:
 
 let
   inherit (pkgs) lib callPackage;
@@ -9,8 +17,19 @@ in
 rec {
   replay-fish = callPackage ./replay-fish.nix { };
   zellij-plugins = callPackage ./zellij-plugins.nix { };
-  zellij = callPackage ./zellij.nix { inherit wrappers zellij-plugins; };
-  fish = callPackage ./fish.nix { inherit wrappers replay-fish; };
+
+  # Programs wrapped with their configuration from config/.
+  programs = {
+    bat = callPackage ./programs/bat.nix { inherit wrappers; };
+    btop = callPackage ./programs/btop.nix { inherit wrappers; };
+    fish = callPackage ./programs/fish.nix { inherit wrappers replay-fish; };
+    git = callPackage ./programs/git.nix { inherit wrappers identity; };
+    jujutsu = callPackage ./programs/jujutsu.nix { inherit wrappers identity; };
+    kitty = callPackage ./programs/kitty.nix { inherit wrappers; };
+    starship = callPackage ./programs/starship.nix { inherit wrappers; };
+    zellij = callPackage ./programs/zellij.nix { inherit wrappers zellij-plugins; };
+  };
+
   yocto = callPackage ./yocto.nix { inherit groups; };
 
   # The full package list of each box.
@@ -32,9 +51,8 @@ rec {
   # Each box as a single package, for nix shell / nix develop.
   envs = lib.mapAttrs (name: paths: pkgs.buildEnv { inherit name paths; }) boxes;
 
-  # fish and zellij below are the wrapped versions above, attributes of this
-  # set take precedence over `with pkgs`.
-  groups = with pkgs; {
+  # The wrapped programs take precedence over the ones in pkgs.
+  groups = with pkgs // programs; {
     # basic system tools, already part of NixOS but needed in FHS
     # environments
     base = [
@@ -123,7 +141,7 @@ rec {
       starship
       zellij
       zoxide
-      kitty.terminfo
+      pkgs.kitty.terminfo
     ];
 
     languages = [
