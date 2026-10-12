@@ -10,12 +10,15 @@ configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
 `claude-code` (workbox) is unfree, so it has to be allowed in the host's
 nixpkgs config.
 
-With `workbox`, the yocto buildtools-extended SDK is installed to
-`/opt/yoctoenv` like in the workbox image (`yocto-buildtools.nix`), with the
-SDK's own certificate settings removed:
+With `workbox`, a `yocto` command opens a bash shell for yocto builds
+(`yocto.nix`). It replaces the buildtools-extended SDK in `/opt/yoctoenv`: an
+FHS environment with the same toolchain (gcc 13) and the yocto host tools,
+using the system certificates.
 
 ```sh
-source /opt/yoctoenv/environment-setup-x86_64-pokysdk-linux
+yocto
+source poky/oe-init-build-env
+bitbake core-image-minimal
 ```
 
 The zellij plugins are installed to `/run/current-system/sw/share/zellij/plugins`

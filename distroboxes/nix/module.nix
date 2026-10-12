@@ -64,20 +64,10 @@ in
         strace
         valgrind
 
-        # yocto host tools (yocto.sh)
-        chrpath
-        cpio
-        diffstat
-        rpcsvc-proto
+        (callPackage ./yocto.nix { })
       ];
 
       programs.nix-ld.libraries = [ pkgs.libxcrypt-legacy ];
-
-      # The yocto buildtools in the same location as in the workbox image:
-      #   source /opt/yoctoenv/environment-setup-x86_64-pokysdk-linux
-      systemd.tmpfiles.rules = [
-        "L+ /opt/yoctoenv - - - - ${pkgs.callPackage ./yocto-buildtools.nix { }}"
-      ];
     })
 
     (lib.mkIf config.basebox.enable {
