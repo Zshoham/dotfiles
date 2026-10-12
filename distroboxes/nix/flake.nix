@@ -3,10 +3,6 @@
 
   inputs = {
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
-    nvim-config = {
-      url = "github:Zshoham/neovim/nix-tests";
-      flake = false;
-    };
     wrappers = {
       url = "git+https://github.com/Lassulus/wrappers";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -17,13 +13,12 @@
     {
       self,
       nixpkgs,
-      nvim-config,
       wrappers,
     }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      packages = import ./packages { inherit pkgs wrappers nvim-config; };
+      packages = import ./packages { inherit pkgs wrappers; };
 
       mkContainer =
         name:
@@ -40,7 +35,7 @@
         };
     in
     {
-      nixosModules.default = import ./module.nix { inherit wrappers nvim-config; };
+      nixosModules.default = import ./module.nix { inherit wrappers; };
 
       # nix shell .#workbox, nix run .#yocto
       packages.${system} =

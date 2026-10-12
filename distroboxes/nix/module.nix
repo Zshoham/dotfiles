@@ -6,7 +6,7 @@
 # The packages, and the configuration moved over from chezmoi so far, are
 # defined in packages/ and config/. Takes the flake inputs it needs from
 # flake.nix.
-{ wrappers, nvim-config }:
+{ wrappers }:
 {
   config,
   lib,
@@ -18,7 +18,7 @@
 let
   cfg = config.basebox;
   packages = import ./packages {
-    inherit pkgs wrappers nvim-config;
+    inherit pkgs wrappers;
     inherit (cfg) identity;
   };
 in

@@ -1,29 +1,95 @@
 # neovim with the external dependencies of the neovim config
-# (github:Zshoham/neovim) from nix: the tools it installs with mason on
-# PATH, and the tree-sitter parsers and plugins with native code prebuilt.
-# The config finds them through vim.g.nix (lua/plugins/nix.lua there).
+# (github:Zshoham/neovim), which it otherwise installs itself:
+# - the tools installed with mason, on neovim's PATH
+# - the tree-sitter parsers and queries, in neovim's site directory
+#   (share/nvim/site, found through XDG_DATA_DIRS)
 {
   lib,
   pkgs,
   wrappers,
-  nvim-config,
 }:
 
 let
-  external = lib.importJSON "${nvim-config}/external.json";
+  # The mason list of the config, by mason name.
+  tools = with pkgs; [
+    bash-language-server # bash-language-server
+    clang-tools # clangd
+    cmake-format # cmakelang
+    cmake-lint # cmakelint
+    docker-compose-language-service # docker-compose-language-service
+    dockerfile-language-server # dockerfile-language-server
+    hadolint # hadolint
+    lua-language-server # lua-language-server
+    markdown-toc # markdown-toc
+    markdownlint-cli2 # markdownlint-cli2
+    marksman # marksman
+    neocmakelsp # neocmakelsp
+    ruff # ruff
+    shfmt # shfmt
+    sqlfluff # sqlfluff
+    stylua # stylua
+    taplo # taplo
+    tinymist # tinymist
+    tree-sitter # tree-sitter-cli
+    ty # ty
+    vscode-langservers-extracted # json-lsp
+    yaml-language-server # yaml-language-server
+  ];
 
-  tools =
-    let
-      available = import ./tools.nix pkgs;
-    in
-    map (
-      name:
-      available.${name}
-        or (throw "neovim: no nix package for the mason tool `${name}`, add it to packages/neovim/tools.nix")
-    ) external.mason;
+  # The tree-sitter list of the config. ecma and jsx only have queries,
+  # jsonc is not an nvim-treesitter language anymore.
+  languages = [
+    "bash"
+    "bitbake"
+    "c"
+    "cmake"
+    "cpp"
+    "cuda"
+    "devicetree"
+    "diff"
+    "dockerfile"
+    "ecma"
+    "fish"
+    "git_config"
+    "git_rebase"
+    "gitattributes"
+    "gitcommit"
+    "gitignore"
+    "html"
+    "hyprlang"
+    "javascript"
+    "jsdoc"
+    "json"
+    "json5"
+    "jsx"
+    "just"
+    "kconfig"
+    "lua"
+    "luadoc"
+    "luap"
+    "make"
+    "markdown"
+    "markdown_inline"
+    "ninja"
+    "printf"
+    "python"
+    "query"
+    "rasi"
+    "regex"
+    "rst"
+    "rust"
+    "sql"
+    "toml"
+    "tsx"
+    "typescript"
+    "typst"
+    "vim"
+    "vimdoc"
+    "xml"
+    "yaml"
+  ];
 
-  # An nvim-treesitter install directory (parser/ and queries/) with the
-  # parsers and queries of every language in the list.
+  # parser/ and queries/ for every language, from nixpkgs' nvim-treesitter
   treesitter =
     let
       ts = pkgs.vimPlugins.nvim-treesitter;
@@ -36,33 +102,26 @@ let
         [ query ] ++ lib.concatMap (dep: queriesOf dep.language) (query.passthru.dependencies or [ ]);
       langPaths =
         lang:
-        assert lib.assertMsg (ts.parsers ? ${lang} || ts.queries ? ${lang})
-          "neovim: nvim-treesitter has no parser or queries for `${lang}`";
+        assert lib.assertMsg (
+          ts.parsers ? ${lang} || ts.queries ? ${lang}
+        ) "neovim: nvim-treesitter has no parser or queries for `${lang}`";
         lib.optional (ts.parsers ? ${lang}) ts.parsers.${lang}
         ++ lib.optionals (ts.queries ? ${lang}) (queriesOf lang);
     in
     pkgs.symlinkJoin {
-      name = "nvim-treesitter-install";
-      paths = lib.unique (lib.concatMap langPaths external.treesitter);
+      name = "nvim-treesitter-parsers";
+      paths = lib.unique (lib.concatMap langPaths languages);
     };
 
-  gitlab-nvim = pkgs.callPackage ./gitlab-nvim.nix { };
-
-  nix = {
-    inherit treesitter;
-    plugins = {
-      "nvim-treesitter" = pkgs.vimPlugins.nvim-treesitter;
-      "blink.cmp" = pkgs.vimPlugins.blink-cmp;
-      "markdown-preview.nvim" = pkgs.vimPlugins.markdown-preview-nvim;
-      "gitlab.nvim" = gitlab-nvim;
-    };
-    gitlab_server = lib.getExe' gitlab-nvim.server "gitlab-nvim-server";
-  };
+  site = pkgs.runCommand "nvim-site" { } ''
+    mkdir -p $out/share/nvim
+    ln -s ${treesitter} $out/share/nvim/site
+  '';
 in
 wrappers.lib.wrapPackage {
   inherit pkgs;
   package = pkgs.neovim;
   runtimeInputs = tools;
-  flags."--cmd" = "lua vim.g.nix = ${lib.generators.toLua { multiline = false; } nix}";
-  passthru = { inherit treesitter tools; };
+  env.XDG_DATA_DIRS = "\${XDG_DATA_DIRS:+$XDG_DATA_DIRS:}${site}/share";
+  passthru = { inherit tools treesitter; };
 }

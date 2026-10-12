@@ -4,8 +4,6 @@
 {
   pkgs,
   wrappers,
-  # the neovim config (github:Zshoham/neovim), for its external.json
-  nvim-config,
   # used by git and jujutsu
   identity ? {
     name = "Zshoham";
@@ -28,7 +26,7 @@ rec {
     git = callPackage ./programs/git.nix { inherit wrappers identity; };
     jujutsu = callPackage ./programs/jujutsu.nix { inherit wrappers identity; };
     kitty = callPackage ./programs/kitty.nix { inherit wrappers; };
-    neovim = callPackage ./neovim { inherit wrappers nvim-config; };
+    neovim = callPackage ./neovim { inherit wrappers; };
     starship = callPackage ./programs/starship.nix { inherit wrappers; };
     zellij = callPackage ./programs/zellij.nix { inherit wrappers zellij-plugins; };
   };
