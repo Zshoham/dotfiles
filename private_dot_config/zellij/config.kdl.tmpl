@@ -1,21 +1,2 @@
-pane_frames false
-
-theme "catppuccin-mocha"
-
-keybinds {
-    shared {
-        bind "Alt Enter" {
-            LaunchOrFocusPlugin "file:{{ template "zellij-plugins" . }}/room.wasm" {
-                floating true
-                ignore_case true
-                quick_jump true
-            }
-        }
-        bind "Alt y" {
-            LaunchOrFocusPlugin "file:{{ template "zellij-plugins" . }}/zellij_forgot.wasm" {
-                "LOAD_ZELLIJ_BINDINGS" "true"
-                floating true
-            }
-        }
-    }
-}
+{{- /* the zellij config lives in distroboxes/nix/config/zellij */ -}}
+{{ include "distroboxes/nix/config/zellij/config.kdl" | replace "@plugins@" "~/.config/zellij/plugins" }}

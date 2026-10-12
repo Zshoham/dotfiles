@@ -1,3 +1,0 @@
-{{- /* ZELLIJ_PLUGINS_DIR is set by the nix zellij package */ -}}
-${ZELLIJ_PLUGINS_DIR:-{{ .chezmoi.homeDir }}/.config/zellij/plugins}
-{{- /**/ -}}

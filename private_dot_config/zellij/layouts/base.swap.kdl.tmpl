@@ -1,0 +1,2 @@
+{{- /* the zellij config lives in distroboxes/nix/config/zellij */ -}}
+{{ include "distroboxes/nix/config/zellij/layouts/base.swap.kdl" | replace "@plugins@" "~/.config/zellij/plugins" }}

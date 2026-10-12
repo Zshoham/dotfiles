@@ -3,9 +3,9 @@
 #   basebox.enable - Dockerfile.basebox
 #   workbox.enable - Dockerfile.work (implies basebox)
 #
-# Programs are configured by the chezmoi dotfiles, the packages are defined
-# in packages/. Takes the wrappers library (wlib) from flake.nix.
-{ wlib }:
+# The packages, and the configuration moved over from chezmoi so far, are
+# defined in packages/ and config/. Takes the wrappers flake from flake.nix.
+{ wrappers }:
 {
   config,
   lib,
@@ -15,7 +15,7 @@
 }:
 
 let
-  packages = import ./packages { inherit pkgs wlib; };
+  packages = import ./packages { inherit pkgs wrappers; };
 in
 {
   options = {

@@ -1,7 +1,7 @@
 # The packages of the boxes, as named groups shared by the NixOS module, the
 # box environments and the yocto environment, plus the packages that are not
 # in nixpkgs.
-{ pkgs, wlib }:
+{ pkgs, wrappers }:
 
 let
   inherit (pkgs) lib callPackage;
@@ -9,8 +9,8 @@ in
 rec {
   replay-fish = callPackage ./replay-fish.nix { };
   zellij-plugins = callPackage ./zellij-plugins.nix { };
-  zellij = callPackage ./zellij.nix { inherit wlib zellij-plugins; };
-  fish = callPackage ./fish.nix { inherit wlib replay-fish; };
+  zellij = callPackage ./zellij.nix { inherit wrappers zellij-plugins; };
+  fish = callPackage ./fish.nix { inherit wrappers replay-fish; };
   yocto = callPackage ./yocto.nix { inherit groups; };
 
   # The full package list of each box.

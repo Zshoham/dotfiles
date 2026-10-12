@@ -1,8 +1,9 @@
 # Nix distroboxes
 
 The programs from the distrobox Dockerfiles as a NixOS module. The flake is
-standalone and does not depend on the rest of the repo. Programs are
-configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
+standalone and does not depend on the rest of the repo. Programs not
+yet configured here (see below) are configured by the chezmoi dotfiles
+(`chezmoi init --apply Zshoham`).
 
 - `basebox.enable`: programs from `Dockerfile.basebox`
 - `workbox.enable`: programs from `Dockerfile.work`, implies `basebox`
@@ -17,12 +18,19 @@ source poky/oe-init-build-env
 bitbake core-image-minimal
 ```
 
-zellij and fish are wrapped with [wrappers](https://github.com/Lassulus/wrappers)
-to bring their plugins along: zellij sets `ZELLIJ_PLUGINS_DIR` (zjstatus
-from `pkgs.zellijPlugins`, room and zellij-forgot built in
-`packages/zellij-plugins.nix`), which the zellij config in the dotfiles
-uses, falling back to `~/.config/zellij/plugins`; fish finds replay.fish
-through `XDG_DATA_DIRS`.
+## Configuration
+
+Configuration is moving from chezmoi into this flake, packaged with the
+programs using [wrappers](https://github.com/Lassulus/wrappers):
+
+- zellij: the config and layouts are in `config/zellij`, with the plugins
+  (zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot built in
+  `packages/zellij-plugins.nix`) referenced from the store. The nix zellij
+  does not read `~/.config/zellij`. Until chezmoi is gone, the dotfiles
+  render the same files for the Arch boxes, with the plugins in
+  `~/.config/zellij/plugins`.
+- fish: finds replay.fish through `XDG_DATA_DIRS`; its config still comes
+  from chezmoi.
 
 ## Without changing the system
 

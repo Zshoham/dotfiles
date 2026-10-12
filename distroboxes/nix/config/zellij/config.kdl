@@ -1,0 +1,21 @@
+pane_frames false
+
+theme "catppuccin-mocha"
+
+keybinds {
+    shared {
+        bind "Alt Enter" {
+            LaunchOrFocusPlugin "file:@plugins@/room.wasm" {
+                floating true
+                ignore_case true
+                quick_jump true
+            }
+        }
+        bind "Alt y" {
+            LaunchOrFocusPlugin "file:@plugins@/zellij_forgot.wasm" {
+                "LOAD_ZELLIJ_BINDINGS" "true"
+                floating true
+            }
+        }
+    }
+}

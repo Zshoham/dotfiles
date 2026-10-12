@@ -18,10 +18,7 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
-      packages = import ./packages {
-        inherit pkgs;
-        wlib = wrappers.lib;
-      };
+      packages = import ./packages { inherit pkgs wrappers; };
 
       mkContainer =
         name:
@@ -38,7 +35,7 @@
         };
     in
     {
-      nixosModules.default = import ./module.nix { wlib = wrappers.lib; };
+      nixosModules.default = import ./module.nix { inherit wrappers; };
 
       # nix shell .#workbox, nix run .#yocto
       packages.${system} = packages.envs // {
