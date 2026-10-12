@@ -36,12 +36,12 @@ there instead of `~/.config/zellij/plugins`.
 
 ## As a NixOS container
 
-Imperatively from the flake (user `box`, passwordless sudo):
+Imperatively from the flake (user `build`, uid 30000, passwordless sudo):
 
 ```sh
 sudo nixos-container create workbox --flake github:Zshoham/dotfiles?dir=distroboxes/nix#workbox
 sudo nixos-container start workbox
-machinectl shell box@workbox
+machinectl shell build@workbox
 ```
 
 Or declared on the host, sharing the network and home directory:
