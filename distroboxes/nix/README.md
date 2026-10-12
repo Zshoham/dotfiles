@@ -10,6 +10,9 @@ configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
 `claude-code` (workbox) is unfree, so it has to be allowed in the host's
 nixpkgs config.
 
+The zellij plugins are installed system wide and linked into
+`~/.config/zellij/plugins` on login, files already there are left alone.
+
 ## On a NixOS host
 
 ```nix

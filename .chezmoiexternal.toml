@@ -1,13 +1,3 @@
-[".config/zellij/plugins/room.wasm"]
-    type = "file"
-    url = "https://github.com/rvcas/room/releases/latest/download/room.wasm"
-    refreshPeriod = "168h"
-
-[".config/zellij/plugins/zellij_forgot.wasm"]
-    type = "file"
-    url = "https://github.com/karimould/zellij-forgot/releases/latest/download/zellij_forgot.wasm"
-    refreshPeriod = "168h"
-
 [".config/nvim"]
     type = "git-repo"
     url = "https://github.com/Zshoham/neovim.git"
