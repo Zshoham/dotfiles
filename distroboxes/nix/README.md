@@ -8,7 +8,7 @@ configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
 - `workbox.enable`: programs from `Dockerfile.work`, implies `basebox`
 
 With `workbox`, the `yocto` command enters an environment for building with
-yocto (`yocto.nix`), in place of the buildtools-extended SDK: an FHS
+yocto (`packages/yocto.nix`), in place of the buildtools-extended SDK: an FHS
 environment with the same toolchain (gcc 13) and the yocto host tools.
 
 ```sh
@@ -19,8 +19,15 @@ bitbake core-image-minimal
 
 The zellij plugins are installed to `/run/current-system/sw/share/zellij/plugins`
 (zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot built in
-`zellij-plugins.nix`). On NixOS the zellij config in the dotfiles points
+`packages/zellij-plugins.nix`). On NixOS the zellij config in the dotfiles points
 there instead of `~/.config/zellij/plugins`.
+
+## Packages
+
+`packages/default.nix` defines the packages as named groups (`base`,
+`utils`, `buildTools`, `shell`, `languages`, `debug`, `work`), used by both
+the module and the yocto environment. The packages that are not in nixpkgs
+are also flake outputs, e.g. `nix run .#yocto`.
 
 ## On a NixOS host
 

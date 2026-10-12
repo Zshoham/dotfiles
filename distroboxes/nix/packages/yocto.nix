@@ -5,16 +5,26 @@
 #
 #   yocto                      # bash in the yocto environment
 #   yocto -c 'bitbake ...'
-{ buildFHSEnv, pkgs }:
+{
+  lib,
+  buildFHSEnv,
+  glibcLocales,
+  runCommand,
+  pkgs,
+  groups,
+}:
 
 buildFHSEnv {
   name = "yocto";
 
   targetPkgs =
-    pkgs: with pkgs; [
-      # buildtools-extended
+    _:
+    groups.base
+    ++ groups.utils
+    ++ groups.buildTools
+    ++ (with pkgs; [
+      # the buildtools-extended toolchain
       gcc13
-      gnumake
       (python312.withPackages (
         ps: with ps; [
           gitpython
@@ -23,50 +33,26 @@ buildFHSEnv {
           python-subunit
         ]
       ))
-      git
-      gnutar
-      perl
 
       # host packages from the yocto docs and yocto.sh
       acl
-      bash
-      bzip2
       chrpath
-      coreutils
       cpio
       debianutils
       diffstat
-      diffutils
-      file
-      findutils
-      gawk
-      gnugrep
-      gnused
-      gzip
-      hostname
-      iputils
       lz4
       # yocto 4.3 still checks for the old lz4c name
       (runCommand "lz4c" { } "mkdir -p $out/bin; ln -s ${lib.getBin lz4}/bin/lz4 $out/bin/lz4c")
       ncurses
       openssl
-      patch
-      procps
       rpcsvc-proto
-      rsync
       socat
       texinfo
-      unzip
-      util-linux
-      wget
-      which
-      xz
       zlib
-      zstd
-    ];
+    ]);
 
   profile = ''
-    export LOCALE_ARCHIVE=${pkgs.glibcLocales}/lib/locale/locale-archive
+    export LOCALE_ARCHIVE=${glibcLocales}/lib/locale/locale-archive
     export LANG=en_US.UTF-8
     export PS1="(yocto) $PS1"
   '';

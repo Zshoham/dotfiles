@@ -1,8 +1,10 @@
-# zellij plugins that are not in nixpkgs, built the same way as
-# pkgs.zellijPlugins. Each plugin is a single .wasm file.
+# The zellij plugins used by the dotfiles, in share/zellij/plugins.
+# zjstatus is in nixpkgs, the others are built the same way as
+# pkgs.zellijPlugins.
 {
   lib,
   fetchFromGitHub,
+  linkFarm,
   pkgsCross,
   zellijPlugins,
 }:
@@ -21,8 +23,7 @@ let
         };
       })
     );
-in
-{
+
   room = buildPlugin rec {
     pname = "room";
     version = "1.2.1";
@@ -56,4 +57,9 @@ in
       license = lib.licenses.mit;
     };
   };
+in
+linkFarm "zellij-plugins" {
+  "share/zellij/plugins/zjstatus.wasm" = zellijPlugins.zjstatus;
+  "share/zellij/plugins/room.wasm" = room;
+  "share/zellij/plugins/zellij_forgot.wasm" = zellij-forgot;
 }

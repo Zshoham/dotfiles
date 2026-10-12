@@ -27,6 +27,11 @@
     {
       nixosModules.default = ./module.nix;
 
+      # nix run .#yocto
+      packages.${system} = {
+        inherit (import ./packages { inherit pkgs; }) yocto zellij-plugins replay-fish;
+      };
+
       # sudo nixos-container create workbox --flake .#workbox
       nixosConfigurations = {
         basebox = mkContainer "basebox";
