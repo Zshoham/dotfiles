@@ -3,8 +3,6 @@
 { ... }:
 
 {
-  imports = [ ./module.nix ];
-
   boot.isContainer = true;
 
   # useradd --uid 30000 --create-home build

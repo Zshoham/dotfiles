@@ -4,7 +4,8 @@
 #   workbox.enable - Dockerfile.work (implies basebox)
 #
 # Programs are configured by the chezmoi dotfiles, the packages are defined
-# in packages/.
+# in packages/. Takes the wrappers library (wlib) from flake.nix.
+{ wlib }:
 {
   config,
   lib,
@@ -14,7 +15,7 @@
 }:
 
 let
-  packages = import ./packages { inherit pkgs; };
+  packages = import ./packages { inherit pkgs wlib; };
 in
 {
   options = {
@@ -24,17 +25,14 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf config.basebox.enable {
-      environment.systemPackages =
-        with packages.groups;
-        base ++ utils ++ buildTools ++ shell ++ languages ++ [ pkgs.gcc ];
+      environment.systemPackages = packages.boxes.basebox;
 
-      programs.fish.enable = true;
+      programs.fish = {
+        enable = true;
+        package = packages.fish;
+      };
 
-      # zellij plugins, used by the zellij config in the dotfiles on NixOS
-      environment.pathsToLink = [
-        "/share/zellij"
-        "/share/dict"
-      ];
+      environment.pathsToLink = [ "/share/dict" ];
 
       # Lets prebuilt binaries run, e.g. language servers installed by mason.
       programs.nix-ld.enable = true;
@@ -46,15 +44,7 @@ in
     (lib.mkIf config.workbox.enable {
       basebox.enable = true;
 
-      environment.systemPackages =
-        with packages.groups;
-        debug
-        ++ work
-        ++ yocto
-        ++ [
-          (lib.hiPrio pkgs.gcc_multi)
-          packages.yocto
-        ];
+      environment.systemPackages = packages.boxes.workbox;
 
       programs.nix-ld.libraries = [ pkgs.libxcrypt-legacy ];
 

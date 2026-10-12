@@ -1,5 +1,3 @@
-{{- if eq (get (get .chezmoi "osRelease" | default dict) "id" | default "") "nixos" -}}
-/run/current-system/sw/share/zellij/plugins
-{{- else -}}
-~/.config/zellij/plugins
-{{- end -}}
+{{- /* ZELLIJ_PLUGINS_DIR is set by the nix zellij package */ -}}
+${ZELLIJ_PLUGINS_DIR:-{{ .chezmoi.homeDir }}/.config/zellij/plugins}
+{{- /**/ -}}

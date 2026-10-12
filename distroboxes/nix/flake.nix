@@ -3,18 +3,31 @@
 
   inputs = {
     nixpkgs.url = "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz";
+    wrappers = {
+      url = "git+https://github.com/Lassulus/wrappers";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
-    { self, nixpkgs }:
+    {
+      self,
+      nixpkgs,
+      wrappers,
+    }:
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      packages = import ./packages {
+        inherit pkgs;
+        wlib = wrappers.lib;
+      };
 
       mkContainer =
         name:
         nixpkgs.lib.nixosSystem {
           modules = [
+            self.nixosModules.default
             ./container.nix
             {
               nixpkgs.hostPlatform = system;
@@ -25,12 +38,17 @@
         };
     in
     {
-      nixosModules.default = ./module.nix;
+      nixosModules.default = import ./module.nix { wlib = wrappers.lib; };
 
-      # nix run .#yocto
-      packages.${system} = {
-        inherit (import ./packages { inherit pkgs; }) yocto zellij-plugins replay-fish;
+      # nix shell .#workbox, nix run .#yocto
+      packages.${system} = packages.envs // {
+        inherit (packages) yocto zellij-plugins replay-fish;
       };
+
+      # nix develop .#workbox
+      devShells.${system} = pkgs.lib.mapAttrs (
+        _: env: pkgs.mkShellNoCC { packages = [ env ]; }
+      ) packages.envs;
 
       # sudo nixos-container create workbox --flake .#workbox
       nixosConfigurations = {

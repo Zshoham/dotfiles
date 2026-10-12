@@ -17,16 +17,31 @@ source poky/oe-init-build-env
 bitbake core-image-minimal
 ```
 
-The zellij plugins are installed to `/run/current-system/sw/share/zellij/plugins`
-(zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot built in
-`packages/zellij-plugins.nix`). On NixOS the zellij config in the dotfiles points
-there instead of `~/.config/zellij/plugins`.
+zellij and fish are wrapped with [wrappers](https://github.com/Lassulus/wrappers)
+to bring their plugins along: zellij sets `ZELLIJ_PLUGINS_DIR` (zjstatus
+from `pkgs.zellijPlugins`, room and zellij-forgot built in
+`packages/zellij-plugins.nix`), which the zellij config in the dotfiles
+uses, falling back to `~/.config/zellij/plugins`; fish finds replay.fish
+through `XDG_DATA_DIRS`.
+
+## Without changing the system
+
+Each box is also a package and a dev shell:
+
+```sh
+nix shell github:Zshoham/dotfiles?dir=distroboxes/nix#workbox    # add to the current shell
+nix develop github:Zshoham/dotfiles?dir=distroboxes/nix#workbox  # bash with the box
+nix run github:Zshoham/dotfiles?dir=distroboxes/nix#yocto        # just the yocto environment
+```
+
+Services (rsyslog) and nix-ld are only set up by the NixOS module.
 
 ## Packages
 
 `packages/default.nix` defines the packages as named groups (`base`,
-`utils`, `buildTools`, `shell`, `languages`, `debug`, `work`), used by both
-the module and the yocto environment. The packages that are not in nixpkgs
+`utils`, `buildTools`, `shell`, `languages`, `debug`, `yocto`, `work`) and
+the full list of each box, used by the module, the box shells and the yocto
+environment. The packages that are not in nixpkgs
 are also flake outputs, e.g. `nix run .#yocto`.
 
 ## On a NixOS host

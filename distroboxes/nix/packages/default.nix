@@ -1,6 +1,7 @@
-# The packages of the boxes, as named groups shared by the NixOS module and
-# the yocto environment, plus the packages that are not in nixpkgs.
-{ pkgs }:
+# The packages of the boxes, as named groups shared by the NixOS module, the
+# box environments and the yocto environment, plus the packages that are not
+# in nixpkgs.
+{ pkgs, wlib }:
 
 let
   inherit (pkgs) lib callPackage;
@@ -8,8 +9,31 @@ in
 rec {
   replay-fish = callPackage ./replay-fish.nix { };
   zellij-plugins = callPackage ./zellij-plugins.nix { };
+  zellij = callPackage ./zellij.nix { inherit wlib zellij-plugins; };
+  fish = callPackage ./fish.nix { inherit wlib replay-fish; };
   yocto = callPackage ./yocto.nix { inherit groups; };
 
+  # The full package list of each box.
+  boxes = {
+    basebox = with groups; base ++ utils ++ buildTools ++ shell ++ languages ++ [ pkgs.gcc ];
+
+    workbox =
+      with groups;
+      boxes.basebox
+      ++ debug
+      ++ work
+      ++ groups.yocto
+      ++ [
+        (lib.hiPrio pkgs.gcc_multi)
+        yocto
+      ];
+  };
+
+  # Each box as a single package, for nix shell / nix develop.
+  envs = lib.mapAttrs (name: paths: pkgs.buildEnv { inherit name paths; }) boxes;
+
+  # fish and zellij below are the wrapped versions above, attributes of this
+  # set take precedence over `with pkgs`.
   groups = with pkgs; {
     # basic system tools, already part of NixOS but needed in FHS
     # environments
@@ -25,7 +49,6 @@ rec {
       gnused
       gnutar
       gzip
-      hostname
       iputils
       ncurses
       patch
@@ -88,18 +111,17 @@ rec {
       delta
       expect
       fd
+      fish
       fzf
       glow
       jq
       jujutsu
       lsd
       neovim
-      replay-fish
       ripgrep
       sd
       starship
       zellij
-      zellij-plugins
       zoxide
       kitty.terminfo
     ];
@@ -136,6 +158,7 @@ rec {
       ffmpeg
       glab
       micromamba
+      rsyslog
     ];
   };
 }
