@@ -10,6 +10,14 @@ configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
 `claude-code` (workbox) is unfree, so it has to be allowed in the host's
 nixpkgs config.
 
+With `workbox`, the yocto buildtools-extended SDK is installed to
+`/opt/yoctoenv` like in the workbox image (`yocto-buildtools.nix`), with the
+SDK's own certificate settings removed:
+
+```sh
+source /opt/yoctoenv/environment-setup-x86_64-pokysdk-linux
+```
+
 The zellij plugins are installed to `/run/current-system/sw/share/zellij/plugins`
 (zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot built in
 `zellij-plugins.nix`). On NixOS the zellij config in the dotfiles points
