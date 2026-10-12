@@ -27,6 +27,7 @@ rec {
       gzip
       hostname
       iputils
+      ncurses
       patch
       procps
       util-linux
@@ -43,8 +44,12 @@ rec {
       keyutils
       lsof
       moreutils
+      pciutils
       pinentry-curses
+      psmisc
       rsync
+      # words, in /run/current-system/sw/share/dict
+      scowl
       tcpdump
       time
       traceroute
@@ -59,11 +64,19 @@ rec {
       autoconf
       automake
       binutils
+      bison
+      debugedit
+      fakeroot
+      flex
+      gettext
       git
       gnumake
+      groff
       libtool
+      m4
       perl
       pkg-config
+      texinfo
     ];
 
     shell = [
@@ -109,6 +122,14 @@ rec {
       perf
       strace
       valgrind
+    ];
+
+    # yocto.sh
+    yocto = [
+      chrpath
+      cpio
+      diffstat
+      rpcsvc-proto
     ];
 
     work = [

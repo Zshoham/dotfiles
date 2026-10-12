@@ -22,6 +22,7 @@ buildFHSEnv {
     groups.base
     ++ groups.utils
     ++ groups.buildTools
+    ++ groups.yocto
     ++ (with pkgs; [
       # the buildtools-extended toolchain
       gcc13
@@ -34,20 +35,14 @@ buildFHSEnv {
         ]
       ))
 
-      # host packages from the yocto docs and yocto.sh
+      # other host packages from the yocto docs
       acl
-      chrpath
-      cpio
       debianutils
-      diffstat
       lz4
       # yocto 4.3 still checks for the old lz4c name
       (runCommand "lz4c" { } "mkdir -p $out/bin; ln -s ${lib.getBin lz4}/bin/lz4 $out/bin/lz4c")
-      ncurses
       openssl
-      rpcsvc-proto
       socat
-      texinfo
       zlib
     ]);
 

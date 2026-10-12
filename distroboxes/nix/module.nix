@@ -31,7 +31,10 @@ in
       programs.fish.enable = true;
 
       # zellij plugins, used by the zellij config in the dotfiles on NixOS
-      environment.pathsToLink = [ "/share/zellij" ];
+      environment.pathsToLink = [
+        "/share/zellij"
+        "/share/dict"
+      ];
 
       # Lets prebuilt binaries run, e.g. language servers installed by mason.
       programs.nix-ld.enable = true;
@@ -47,12 +50,15 @@ in
         with packages.groups;
         debug
         ++ work
+        ++ yocto
         ++ [
           (lib.hiPrio pkgs.gcc_multi)
           packages.yocto
         ];
 
       programs.nix-ld.libraries = [ pkgs.libxcrypt-legacy ];
+
+      services.rsyslogd.enable = lib.mkDefault true;
     })
   ];
 }
