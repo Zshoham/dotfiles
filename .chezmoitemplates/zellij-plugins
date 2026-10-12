@@ -1,0 +1,5 @@
+{{- if eq (get (get .chezmoi "osRelease" | default dict) "id" | default "") "nixos" -}}
+/run/current-system/sw/share/zellij/plugins
+{{- else -}}
+~/.config/zellij/plugins
+{{- end -}}

@@ -1,1 +1,4 @@
 distroboxes/
+{{- if eq (get (get .chezmoi "osRelease" | default dict) "id" | default "") "nixos" }}
+.config/zellij/plugins
+{{- end }}
