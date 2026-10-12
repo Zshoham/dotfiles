@@ -1,7 +1,7 @@
-# A shell for yocto builds, replacing the buildtools-extended SDK the
-# workbox image installs to /opt/yoctoenv. The toolchain matches the one in
-# buildtools-extended 4.3 (gcc 13), with python 3.12, the FHS layout keeps
-# bitbake's host tool checks happy.
+# An environment for building with yocto, replacing the buildtools-extended
+# SDK of the workbox image. The toolchain matches buildtools-extended 4.3
+# (gcc 13), with python 3.12, the FHS layout keeps bitbake's host tool
+# checks happy.
 #
 #   yocto                      # bash in the yocto environment
 #   yocto -c 'bitbake ...'

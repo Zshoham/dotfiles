@@ -10,10 +10,9 @@ configured by the chezmoi dotfiles as usual (`chezmoi init --apply Zshoham`).
 `claude-code` (workbox) is unfree, so it has to be allowed in the host's
 nixpkgs config.
 
-With `workbox`, a `yocto` command opens a bash shell for yocto builds
-(`yocto.nix`). It replaces the buildtools-extended SDK in `/opt/yoctoenv`: an
-FHS environment with the same toolchain (gcc 13) and the yocto host tools,
-using the system certificates.
+With `workbox`, the `yocto` command enters an environment for building with
+yocto (`yocto.nix`), in place of the buildtools-extended SDK: an FHS
+environment with the same toolchain (gcc 13) and the yocto host tools.
 
 ```sh
 yocto
