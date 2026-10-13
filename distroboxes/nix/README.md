@@ -87,7 +87,7 @@ nix run github:Zshoham/dotfiles?dir=distroboxes/nix#yocto        # just the yoct
 
 Services (rsyslog) are only set up by the NixOS module. Neither box enables
 nix-ld: everything they install is built by nix, and conda packages run in
-`mamba-shell`.
+`conda`.
 
 ## Packages
 
