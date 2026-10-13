@@ -37,8 +37,10 @@ that combine several (`packages/env-shell.nix` builds them):
   pixi init proj && cd proj && pixi add python && pixi run python
   ```
 
-- `yocto-conda`: both, e.g. to run a test from a conda environment that
-  uses `runqemu`.
+- `workbox`: the workbox as a shell, yocto and conda together with the
+  tools of the box, e.g. to run a test from a conda environment that uses
+  `runqemu`. It leaves out the box's own compilers, so yocto's gcc 13 and
+  python are the ones in the shell (gcc 16 with multilib is on the host).
 
 An environment has a `name` (of its own shell), the `packages` of the
 shell's file system, a `profile` with environment variables and an `init`
@@ -92,11 +94,10 @@ with the user from the chezmoi prompts).
 
 ## Without changing the system
 
-Each box is also a package and a dev shell:
-
 ```sh
-nix shell github:Zshoham/dotfiles?dir=distroboxes/nix#workbox    # add to the current shell
-nix develop github:Zshoham/dotfiles?dir=distroboxes/nix#workbox  # bash with the box
+nix shell github:Zshoham/dotfiles?dir=distroboxes/nix#basebox    # add the basebox to the current shell
+nix develop github:Zshoham/dotfiles?dir=distroboxes/nix#basebox  # bash with the basebox
+nix run github:Zshoham/dotfiles?dir=distroboxes/nix#workbox      # the workbox shell
 nix run github:Zshoham/dotfiles?dir=distroboxes/nix#yocto        # just the yocto environment
 ```
 
@@ -110,7 +111,7 @@ nix-ld: everything they install is built by nix, and conda packages run in
 `utils`, `buildTools`, `shell`, `languages`, `debug`, `yocto`, `work`) and
 the full list of each box, used by the module, the box shells and the yocto
 environment. The packages that are not in nixpkgs
-are also flake outputs, e.g. `nix run .#yocto-conda`.
+are also flake outputs, e.g. `nix run .#conda`.
 
 ## On a NixOS host
 

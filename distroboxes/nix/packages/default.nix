@@ -46,11 +46,19 @@ rec {
     conda = callPackage ./environments/conda.nix { inherit groups; };
   };
   shells = lib.mapAttrs (_: env: env.shell) environments // {
-    yocto-conda = envShell.mkShell {
-      name = "yocto-conda";
+    # the workbox: yocto and conda, with the tools of the box
+    workbox = envShell.mkShell {
+      name = "workbox";
       environments = [
         environments.yocto
         environments.conda
+        {
+          name = "workbox";
+          # without the compilers, so yocto's gcc 13 is the one in the shell
+          packages =
+            with groups;
+            base ++ utils ++ buildTools ++ shell ++ languages ++ debug ++ work ++ groups.yocto;
+        }
       ];
     };
   };
@@ -69,8 +77,12 @@ rec {
       ++ lib.attrValues shells;
   };
 
-  # Each box as a single package, for nix shell / nix develop.
-  envs = lib.mapAttrs (name: paths: pkgs.buildEnv { inherit name paths; }) boxes;
+  # The basebox as a single package, for nix shell / nix develop. The workbox
+  # is the workbox shell.
+  envs.basebox = pkgs.buildEnv {
+    name = "basebox";
+    paths = boxes.basebox;
+  };
 
   # The wrapped programs take precedence over the ones in pkgs.
   groups = with pkgs // programs; {

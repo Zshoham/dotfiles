@@ -37,7 +37,7 @@
     {
       nixosModules.default = import ./module.nix { inherit wrappers; };
 
-      # nix shell .#workbox, nix run .#yocto
+      # nix shell .#basebox, nix run .#workbox
       packages.${system} =
         packages.envs
         // packages.programs
@@ -46,7 +46,7 @@
           inherit (packages) zellij-plugins replay-fish;
         };
 
-      # nix develop .#workbox
+      # nix develop .#basebox
       devShells.${system} = pkgs.lib.mapAttrs (
         _: env: pkgs.mkShellNoCC { packages = [ env ]; }
       ) packages.envs;
