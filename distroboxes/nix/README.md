@@ -33,26 +33,27 @@ don't read anything from `~/.config`:
 | git      | `config/git`      | user from `basebox.identity`, delta on its PATH |
 | jujutsu  | `config/jj`       | user from `basebox.identity` |
 | kitty    | `config/kitty`    | flake package only, not part of the boxes (they only have its terminfo) |
-| neovim   | (own repo)        | external dependencies from nix, see below |
+| neovim   | `config/nvim`     | LazyVim, everything from nix, see below |
 | starship | `config/starship.toml` | `starship init` points at the wrapper |
 | zellij   | `config/zellij`   | plugins (zjstatus from `pkgs.zellijPlugins`, room and zellij-forgot from `packages/zellij-plugins.nix`) from the store |
 
 ### neovim
 
-The neovim config stays in its own repo (cloned to `~/.config/nvim` by
-chezmoi). `packages/neovim` provides everything it would otherwise
-download or build itself, so the basebox doesn't need nix-ld:
+`packages/neovim` builds neovim with the whole LazyVim config from
+`config/nvim` (from github:Zshoham/neovim, which the Arch boxes still clone
+with chezmoi). Everything comes from nix, so nothing is downloaded or built
+at runtime and the basebox doesn't need nix-ld:
 
-- the tools it installs with mason, on neovim's PATH
-- the tree-sitter parsers and queries, as an nvim-treesitter install
-  directory
-- nvim-treesitter, blink.cmp (with its Rust fuzzy matcher),
-  markdown-preview.nvim and gitlab.nvim (with its Go server,
-  `packages/neovim/gitlab-nvim.nix`)
+- the plugins (`packages/neovim/plugins.nix`, by their lazy.nvim name),
+  loaded by lazy.nvim through `dev.path`, from nixpkgs except the diffview
+  fork, seeker.nvim and gitlab.nvim with its Go server
+- the tree-sitter parsers and queries, as nvim-treesitter's `install_dir`
+- the language servers and tools (mason is disabled), on neovim's PATH
 
-Their locations are passed to the config in `vim.g.nix`. The config has to
-use them when it is set (turn off mason, set nvim-treesitter's
-`install_dir`, load those plugins from their `dir`).
+The config is copied to the store with its `@...@` placeholders replaced by
+those paths, and neovim is started with `-u` on it. `~/.config/nvim` is
+ignored, and LazyVim extras are set in `config/nvim/lazyvim.json` (`:LazyExtras`
+can't change it).
 
 `basebox.identity.name` and `basebox.identity.email` default to Zshoham /
 ShohamZarfti@gmail.com.

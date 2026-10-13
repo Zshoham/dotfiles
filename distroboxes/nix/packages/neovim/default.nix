@@ -1,10 +1,6 @@
-# neovim with the external dependencies of the neovim config
-# (github:Zshoham/neovim), which it otherwise installs itself:
-# - the tools installed with mason, on neovim's PATH
-# - the tree-sitter parsers and queries
-# - the plugins that download or build native code
-# The config finds them through vim.g.nix (lua/plugins/nix.lua there) and
-# then doesn't use mason, so nothing prebuilt is downloaded.
+# neovim with its whole configuration from config/nvim (LazyVim): the
+# plugins, the tree-sitter parsers and queries, and the language servers and
+# tools all come from nix, nothing is downloaded or built at runtime.
 {
   lib,
   pkgs,
@@ -12,7 +8,7 @@
 }:
 
 let
-  # The mason list of the config, by mason name.
+  # The language servers and tools, commented with their mason name.
   tools = with pkgs; [
     bash-language-server # bash-language-server
     clang-tools # clangd
@@ -38,7 +34,7 @@ let
     yaml-language-server # yaml-language-server
   ];
 
-  # The tree-sitter list of the config. ecma and jsx only have queries,
+  # The tree-sitter parsers of the config. ecma and jsx only have queries,
   # jsonc is not an nvim-treesitter language anymore.
   languages = [
     "bash"
@@ -115,27 +111,37 @@ let
       paths = lib.unique (lib.concatMap langPaths languages);
     };
 
-  gitlab-nvim = pkgs.callPackage ./gitlab-nvim.nix { };
+  plugins = lib.filterAttrs (_: lib.isDerivation) (pkgs.callPackage ./plugins.nix { });
 
-  nix = {
-    # an nvim-treesitter install directory, parser/ and queries/
-    inherit treesitter;
-    plugins = {
-      # the same version as the queries
-      "nvim-treesitter" = pkgs.vimPlugins.nvim-treesitter;
-      # with its rust fuzzy matcher
-      "blink.cmp" = pkgs.vimPlugins.blink-cmp;
-      # with its app
-      "markdown-preview.nvim" = pkgs.vimPlugins.markdown-preview-nvim;
-      "gitlab.nvim" = gitlab-nvim;
-    };
-    gitlab_server = lib.getExe' gitlab-nvim.server "gitlab-nvim-server";
-  };
+  # lazy.nvim loads the plugins from here (dev.path in the config)
+  pluginsDir = pkgs.linkFarm "nvim-plugins" plugins;
+
+  config = pkgs.runCommand "nvim-config" { } ''
+    cp -r ${../../config/nvim} $out
+    chmod -R u+w $out
+    substituteInPlace $(grep -rl '@[a-z_]*@' $out) \
+      --replace-quiet @config@ $out \
+      --replace-quiet @lazy@ ${pkgs.vimPlugins.lazy-nvim} \
+      --replace-quiet @plugins@ ${pluginsDir} \
+      --replace-quiet @treesitter@ ${treesitter} \
+      --replace-quiet @gitlab_server@ ${lib.getExe' plugins."gitlab.nvim".server "gitlab-nvim-server"}
+    if grep -rn '@[a-z_]*@' $out; then
+      echo "unreplaced placeholders in the neovim config"
+      exit 1
+    fi
+  '';
 in
 wrappers.lib.wrapPackage {
   inherit pkgs;
   package = pkgs.neovim;
   runtimeInputs = tools;
-  flags."--cmd" = "lua vim.g.nix = ${lib.generators.toLua { multiline = false; } nix}";
-  passthru = { inherit tools treesitter; };
+  flags."-u" = "${config}/init.lua";
+  passthru = {
+    inherit
+      config
+      plugins
+      tools
+      treesitter
+      ;
+  };
 }
