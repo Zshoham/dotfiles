@@ -10,7 +10,6 @@
 {
   config,
   lib,
-  options,
   pkgs,
   ...
 }:
@@ -58,13 +57,6 @@ in
       basebox.enable = true;
 
       environment.systemPackages = packages.boxes.workbox;
-
-      # Lets prebuilt binaries run, e.g. conda packages, pip wheels and
-      # libxcrypt-compat users.
-      programs.nix-ld = {
-        enable = true;
-        libraries = options.programs.nix-ld.libraries.default ++ [ pkgs.libxcrypt-legacy ];
-      };
 
       services.rsyslogd.enable = lib.mkDefault true;
     })

@@ -42,7 +42,12 @@
         packages.envs
         // packages.programs
         // {
-          inherit (packages) yocto zellij-plugins replay-fish;
+          inherit (packages)
+            yocto
+            mamba-shell
+            zellij-plugins
+            replay-fish
+            ;
         };
 
       # nix develop .#workbox

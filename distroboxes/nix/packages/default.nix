@@ -32,6 +32,7 @@ rec {
   };
 
   yocto = callPackage ./yocto.nix { inherit groups; };
+  mamba-shell = callPackage ./mamba.nix { inherit groups; };
 
   # The full package list of each box.
   boxes = {
@@ -46,6 +47,7 @@ rec {
       ++ [
         (lib.hiPrio pkgs.gcc_multi)
         yocto
+        mamba-shell
       ];
   };
 
@@ -176,7 +178,6 @@ rec {
     work = [
       ffmpeg
       glab
-      micromamba
       rsyslog
     ];
   };
