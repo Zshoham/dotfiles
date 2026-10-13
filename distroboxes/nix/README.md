@@ -5,48 +5,54 @@ standalone and does not depend on the rest of the repo. Programs not
 yet configured here (see below) are configured by the chezmoi dotfiles
 (`chezmoi init --apply Zshoham`).
 
-- `basebox.enable`: programs from `Dockerfile.basebox`
-- `workbox.enable`: programs from `Dockerfile.work`, implies `basebox`
+- `basebox.enable`: the basebox environment, programs from `Dockerfile.basebox`
+- `workbox.enable`: the workbox environment, programs from `Dockerfile.work`,
+  with the basebox, yocto and conda environments
 
 ## Environments
 
-Some tools need a regular Linux layout (`/lib64/ld-linux...`, `/usr/lib`),
-so the workbox has shells that provide one (FHS environments). They are
-built from environments (`packages/environments`): every environment has a
-shell of its own, and `shells` in `packages/default.nix` adds named shells
-that combine several (`packages/env-shell.nix` builds them):
+The boxes are environments (`packages/environments`, built with
+`packages/environment.nix`). An environment has packages and can include
+other environments, so it has everything they have:
 
-- `yocto`: building with yocto, in place of the buildtools-extended SDK:
-  the same toolchain (gcc 13) and the yocto host tools.
+- `basebox`: the programs of `Dockerfile.basebox`
+- `yocto`: building with yocto, in place of the buildtools-extended SDK: the
+  same toolchain (gcc 13) and the yocto host tools
+- `conda`: conda based development with micromamba and pixi, with
+  `micromamba activate` and the environments in `$MAMBA_ROOT_PREFIX`
+  (default `~/.local/share/mamba`)
+- `workbox`: the programs of `Dockerfile.work`, and includes `basebox`,
+  `yocto` and `conda`
 
-  ```sh
-  yocto
-  source poky/oe-init-build-env
-  bitbake core-image-minimal
-  ```
+Every environment has a shell with everything it includes. `yocto` and
+`conda` need a regular Linux layout (`/lib64/ld-linux...`, `/usr/lib`,
+`fhs = true`): yocto's host tool checks expect it and conda packages are
+prebuilt binaries, which run there without nix-ld. So the shells are FHS
+environments, and installing an environment on a host (the NixOS module,
+`nix shell`) installs the packages of the ones that don't need it and the
+shells of the ones that do (and of every environment including them). The
+workbox installs the basebox and workbox programs on the host, and the
+`workbox`, `yocto` and `conda` shells:
 
-- `conda`: conda based development with micromamba and pixi. Conda
-  packages are prebuilt binaries, they run here without nix-ld. It sets up
-  `micromamba activate`, with the environments in `$MAMBA_ROOT_PREFIX`
-  (default `~/.local/share/mamba`).
+```sh
+yocto
+source poky/oe-init-build-env
+bitbake core-image-minimal
 
-  ```sh
-  conda
-  micromamba create -n py -c conda-forge python
-  micromamba activate py
-  pixi init proj && cd proj && pixi add python && pixi run python
-  ```
+conda
+micromamba create -n py -c conda-forge python
+micromamba activate py
+pixi init proj && cd proj && pixi add python && pixi run python
 
-- `workbox`: the workbox as a shell, yocto and conda together with the
-  tools of the box, e.g. to run a test from a conda environment that uses
-  `runqemu`. It leaves out the box's own compilers, so yocto's gcc 13 and
-  python are the ones in the shell (gcc 16 with multilib is on the host).
+workbox       # all of it, e.g. a test from a conda environment using runqemu
+```
 
-An environment has a `name` (of its own shell), the `packages` of the
-shell's file system, a `profile` with environment variables and an `init`
-with bash setup (after `~/.bashrc`). A combined shell has a name of its own
-and all of their packages, variables and setup. There's no sudo in these shells, use `runqemu slirp` (or create the tap
-devices with `runqemu-gen-tapdevs` beforehand).
+An environment has a `name` (of its shell), `packages`, `includes`,
+`fhs`, a `profile` with environment variables, an `init` with bash setup
+(after `~/.bashrc`) and `hostOnlyPackages` that only go on the host (the
+workbox's gcc 16 with multilib, so its shell keeps yocto's gcc 13). There's
+no sudo in the shells, use `runqemu slirp` (or create the tap devices with
+`runqemu-gen-tapdevs` beforehand).
 
 ## Configuration
 
@@ -94,11 +100,14 @@ with the user from the chezmoi prompts).
 
 ## Without changing the system
 
+Every environment is a flake package: the ones that need a regular Linux
+layout are their shell, the others their packages.
+
 ```sh
 nix shell github:Zshoham/dotfiles?dir=distroboxes/nix#basebox    # add the basebox to the current shell
 nix develop github:Zshoham/dotfiles?dir=distroboxes/nix#basebox  # bash with the basebox
 nix run github:Zshoham/dotfiles?dir=distroboxes/nix#workbox      # the workbox shell
-nix run github:Zshoham/dotfiles?dir=distroboxes/nix#yocto        # just the yocto environment
+nix run github:Zshoham/dotfiles?dir=distroboxes/nix#yocto        # the yocto shell
 ```
 
 Services (rsyslog) are only set up by the NixOS module. Neither box enables
@@ -108,10 +117,9 @@ nix-ld: everything they install is built by nix, and conda packages run in
 ## Packages
 
 `packages/default.nix` defines the packages as named groups (`base`,
-`utils`, `buildTools`, `shell`, `languages`, `debug`, `yocto`, `work`) and
-the full list of each box, used by the module, the box shells and the yocto
-environment. The packages that are not in nixpkgs
-are also flake outputs, e.g. `nix run .#conda`.
+`utils`, `buildTools`, `shell`, `languages`, `debug`, `yocto`, `work`), which
+the environments are made of, and the environments. The wrapped programs
+and the packages that are not in nixpkgs are also flake outputs.
 
 ## On a NixOS host
 

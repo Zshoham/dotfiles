@@ -19,6 +19,7 @@ let
 in
 {
   name = "conda";
+  fhs = true;
 
   packages =
     groups.base

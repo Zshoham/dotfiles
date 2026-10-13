@@ -41,7 +41,7 @@ in
 
   config = lib.mkMerge [
     (lib.mkIf config.basebox.enable {
-      environment.systemPackages = packages.boxes.basebox;
+      environment.systemPackages = packages.environments.basebox.hostPackages;
 
       programs.fish = {
         enable = true;
@@ -56,7 +56,7 @@ in
     (lib.mkIf config.workbox.enable {
       basebox.enable = true;
 
-      environment.systemPackages = packages.boxes.workbox;
+      environment.systemPackages = packages.environments.workbox.hostPackages;
 
       services.rsyslogd.enable = lib.mkDefault true;
     })

@@ -31,57 +31,25 @@ rec {
     zellij = callPackage ./programs/zellij.nix { inherit wrappers zellij-plugins; };
   };
 
-  # Environments that need a regular Linux layout, each with its own shell,
-  # and shells that combine them (env-shell.nix).
-  envShell = import ./env-shell.nix {
-    inherit (pkgs)
-      lib
-      buildFHSEnv
-      writeText
-      writeShellScript
-      ;
-  };
-  environments = lib.mapAttrs (_: envShell.mkEnvironment) {
+  # The environments (environment.nix): the boxes, and the yocto and conda
+  # environments that need a regular Linux layout. Each has a shell of its
+  # own and the packages that install it on a host.
+  inherit
+    (import ./environment.nix {
+      inherit (pkgs)
+        lib
+        buildFHSEnv
+        writeText
+        writeShellScript
+        ;
+    })
+    mkEnvironment
+    ;
+  environments = lib.mapAttrs (_: mkEnvironment) {
+    basebox = callPackage ./environments/basebox.nix { inherit groups; };
     yocto = callPackage ./environments/yocto.nix { inherit groups; };
     conda = callPackage ./environments/conda.nix { inherit groups; };
-  };
-  shells = lib.mapAttrs (_: env: env.shell) environments // {
-    # the workbox: yocto and conda, with the tools of the box
-    workbox = envShell.mkShell {
-      name = "workbox";
-      environments = [
-        environments.yocto
-        environments.conda
-        {
-          name = "workbox";
-          # without the compilers, so yocto's gcc 13 is the one in the shell
-          packages =
-            with groups;
-            base ++ utils ++ buildTools ++ shell ++ languages ++ debug ++ work ++ groups.yocto;
-        }
-      ];
-    };
-  };
-
-  # The full package list of each box.
-  boxes = {
-    basebox = with groups; base ++ utils ++ buildTools ++ shell ++ languages ++ [ pkgs.gcc ];
-
-    workbox =
-      with groups;
-      boxes.basebox
-      ++ debug
-      ++ work
-      ++ groups.yocto
-      ++ [ (lib.hiPrio pkgs.gcc_multi) ]
-      ++ lib.attrValues shells;
-  };
-
-  # The basebox as a single package, for nix shell / nix develop. The workbox
-  # is the workbox shell.
-  envs.basebox = pkgs.buildEnv {
-    name = "basebox";
-    paths = boxes.basebox;
+    workbox = callPackage ./environments/workbox.nix { inherit groups environments; };
   };
 
   # The wrapped programs take precedence over the ones in pkgs.

@@ -18,6 +18,7 @@
     let
       system = "x86_64-linux";
       pkgs = nixpkgs.legacyPackages.${system};
+      inherit (nixpkgs) lib;
       packages = import ./packages { inherit pkgs wrappers; };
 
       mkContainer =
@@ -37,19 +38,28 @@
     {
       nixosModules.default = import ./module.nix { inherit wrappers; };
 
-      # nix shell .#basebox, nix run .#workbox
+      # Every environment: environments that need a regular Linux layout are
+      # their shell (nix run .#workbox), the others their packages (nix shell
+      # .#basebox, nix develop .#basebox).
       packages.${system} =
-        packages.envs
+        lib.mapAttrs (
+          name: env:
+          if env.needsFhs then
+            env.shell
+          else
+            pkgs.buildEnv {
+              inherit name;
+              paths = env.hostPackages;
+            }
+        ) packages.environments
         // packages.programs
-        // packages.shells
         // {
           inherit (packages) zellij-plugins replay-fish;
         };
 
-      # nix develop .#basebox
-      devShells.${system} = pkgs.lib.mapAttrs (
-        _: env: pkgs.mkShellNoCC { packages = [ env ]; }
-      ) packages.envs;
+      devShells.${system} = lib.mapAttrs (
+        name: _: pkgs.mkShellNoCC { packages = [ self.packages.${system}.${name} ]; }
+      ) (lib.filterAttrs (_: env: !env.needsFhs) packages.environments);
 
       # sudo nixos-container create workbox --flake .#workbox
       nixosConfigurations = {

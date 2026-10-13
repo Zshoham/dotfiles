@@ -11,6 +11,7 @@
 
 {
   name = "yocto";
+  fhs = true;
 
   packages =
     groups.base
@@ -18,15 +19,18 @@
     ++ groups.buildTools
     ++ groups.yocto
     ++ (with pkgs; [
-      # the buildtools-extended toolchain
-      gcc13
-      (python312.withPackages (
-        ps: with ps; [
-          gitpython
-          jinja2
-          pexpect
-          python-subunit
-        ]
+      # the buildtools-extended toolchain, preferred over the gcc and python
+      # of environments it is combined with (basebox)
+      (lib.hiPrio gcc13)
+      (lib.hiPrio (
+        python312.withPackages (
+          ps: with ps; [
+            gitpython
+            jinja2
+            pexpect
+            python-subunit
+          ]
+        )
       ))
 
       # other host packages from the yocto docs
