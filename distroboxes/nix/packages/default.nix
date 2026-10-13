@@ -31,13 +31,9 @@ rec {
     zellij = callPackage ./programs/zellij.nix { inherit wrappers zellij-plugins; };
   };
 
-  # Environments that need a regular Linux layout, and the shells built from
-  # them (env-shell.nix): each environment on its own and combinations.
-  environments = {
-    yocto = callPackage ./environments/yocto.nix { inherit groups; };
-    conda = callPackage ./environments/conda.nix { inherit groups; };
-  };
-  mkEnvShell = import ./env-shell.nix {
+  # Environments that need a regular Linux layout, each with its own shell,
+  # and shells that combine them (env-shell.nix).
+  envShell = import ./env-shell.nix {
     inherit (pkgs)
       lib
       buildFHSEnv
@@ -45,13 +41,18 @@ rec {
       writeShellScript
       ;
   };
-  shells = lib.mapAttrs (_: mkEnvShell) {
-    yocto = [ environments.yocto ];
-    conda = [ environments.conda ];
-    yocto-conda = [
-      environments.yocto
-      environments.conda
-    ];
+  environments = lib.mapAttrs (_: envShell.mkEnvironment) {
+    yocto = callPackage ./environments/yocto.nix { inherit groups; };
+    conda = callPackage ./environments/conda.nix { inherit groups; };
+  };
+  shells = lib.mapAttrs (_: env: env.shell) environments // {
+    yocto-conda = envShell.mkShell {
+      name = "yocto-conda";
+      environments = [
+        environments.yocto
+        environments.conda
+      ];
+    };
   };
 
   # The full package list of each box.

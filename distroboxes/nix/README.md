@@ -11,10 +11,10 @@ yet configured here (see below) are configured by the chezmoi dotfiles
 ## Environments
 
 Some tools need a regular Linux layout (`/lib64/ld-linux...`, `/usr/lib`),
-so the workbox has shells that provide one (FHS environments). Each is
-built from environments (`packages/environments`), and combinations of
-them are built ahead of time (`shells` in `packages/default.nix`,
-`packages/env-shell.nix` builds them):
+so the workbox has shells that provide one (FHS environments). They are
+built from environments (`packages/environments`): every environment has a
+shell of its own, and `shells` in `packages/default.nix` adds named shells
+that combine several (`packages/env-shell.nix` builds them):
 
 - `yocto`: building with yocto, in place of the buildtools-extended SDK:
   the same toolchain (gcc 13) and the yocto host tools.
@@ -40,10 +40,10 @@ them are built ahead of time (`shells` in `packages/default.nix`,
 - `yocto-conda`: both, e.g. to run a test from a conda environment that
   uses `runqemu`.
 
-An environment has a `name`, the `packages` of the shell's file system, a
-`profile` with environment variables and an `init` with bash setup (after
-`~/.bashrc`). A combined shell has all of them, its name joins theirs with
-`-`. There's no sudo in these shells, use `runqemu slirp` (or create the tap
+An environment has a `name` (of its own shell), the `packages` of the
+shell's file system, a `profile` with environment variables and an `init`
+with bash setup (after `~/.bashrc`). A combined shell has a name of its own
+and all of their packages, variables and setup. There's no sudo in these shells, use `runqemu slirp` (or create the tap
 devices with `runqemu-gen-tapdevs` beforehand).
 
 ## Configuration
