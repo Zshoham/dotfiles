@@ -1,8 +1,10 @@
 # neovim with the external dependencies of the neovim config
 # (github:Zshoham/neovim), which it otherwise installs itself:
 # - the tools installed with mason, on neovim's PATH
-# - the tree-sitter parsers and queries, in neovim's site directory
-#   (share/nvim/site, found through XDG_DATA_DIRS)
+# - the tree-sitter parsers and queries
+# - the plugins that download or build native code
+# The config finds them through vim.g.nix (lua/plugins/nix.lua there) and
+# then doesn't use mason, so nothing prebuilt is downloaded.
 {
   lib,
   pkgs,
@@ -113,15 +115,27 @@ let
       paths = lib.unique (lib.concatMap langPaths languages);
     };
 
-  site = pkgs.runCommand "nvim-site" { } ''
-    mkdir -p $out/share/nvim
-    ln -s ${treesitter} $out/share/nvim/site
-  '';
+  gitlab-nvim = pkgs.callPackage ./gitlab-nvim.nix { };
+
+  nix = {
+    # an nvim-treesitter install directory, parser/ and queries/
+    inherit treesitter;
+    plugins = {
+      # the same version as the queries
+      "nvim-treesitter" = pkgs.vimPlugins.nvim-treesitter;
+      # with its rust fuzzy matcher
+      "blink.cmp" = pkgs.vimPlugins.blink-cmp;
+      # with its app
+      "markdown-preview.nvim" = pkgs.vimPlugins.markdown-preview-nvim;
+      "gitlab.nvim" = gitlab-nvim;
+    };
+    gitlab_server = lib.getExe' gitlab-nvim.server "gitlab-nvim-server";
+  };
 in
 wrappers.lib.wrapPackage {
   inherit pkgs;
   package = pkgs.neovim;
   runtimeInputs = tools;
-  env.XDG_DATA_DIRS = "\${XDG_DATA_DIRS:+$XDG_DATA_DIRS:}${site}/share";
+  flags."--cmd" = "lua vim.g.nix = ${lib.generators.toLua { multiline = false; } nix}";
   passthru = { inherit tools treesitter; };
 }

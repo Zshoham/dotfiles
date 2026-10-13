@@ -51,10 +51,6 @@ in
 
       environment.pathsToLink = [ "/share/dict" ];
 
-      # Lets prebuilt binaries run, e.g. language servers installed by mason.
-      programs.nix-ld.enable = true;
-      programs.nix-ld.libraries = options.programs.nix-ld.libraries.default;
-
       documentation.dev.enable = true;
     })
 
@@ -63,7 +59,12 @@ in
 
       environment.systemPackages = packages.boxes.workbox;
 
-      programs.nix-ld.libraries = [ pkgs.libxcrypt-legacy ];
+      # Lets prebuilt binaries run, e.g. conda packages, pip wheels and
+      # libxcrypt-compat users.
+      programs.nix-ld = {
+        enable = true;
+        libraries = options.programs.nix-ld.libraries.default ++ [ pkgs.libxcrypt-legacy ];
+      };
 
       services.rsyslogd.enable = lib.mkDefault true;
     })

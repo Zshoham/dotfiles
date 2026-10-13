@@ -40,11 +40,19 @@ don't read anything from `~/.config`:
 ### neovim
 
 The neovim config stays in its own repo (cloned to `~/.config/nvim` by
-chezmoi). `packages/neovim` installs its external dependencies with nix:
-the tools it installs with mason are on neovim's PATH, and the tree-sitter
-parsers and queries are in neovim's site directory (`share/nvim/site`
-through `XDG_DATA_DIRS`). The config doesn't use the nix parsers yet, it
-still installs its own with nvim-treesitter.
+chezmoi). `packages/neovim` provides everything it would otherwise
+download or build itself, so the basebox doesn't need nix-ld:
+
+- the tools it installs with mason, on neovim's PATH
+- the tree-sitter parsers and queries, as an nvim-treesitter install
+  directory
+- nvim-treesitter, blink.cmp (with its Rust fuzzy matcher),
+  markdown-preview.nvim and gitlab.nvim (with its Go server,
+  `packages/neovim/gitlab-nvim.nix`)
+
+Their locations are passed to the config in `vim.g.nix`. The config has to
+use them when it is set (turn off mason, set nvim-treesitter's
+`install_dir`, load those plugins from their `dir`).
 
 `basebox.identity.name` and `basebox.identity.email` default to Zshoham /
 ShohamZarfti@gmail.com.
@@ -63,7 +71,8 @@ nix develop github:Zshoham/dotfiles?dir=distroboxes/nix#workbox  # bash with the
 nix run github:Zshoham/dotfiles?dir=distroboxes/nix#yocto        # just the yocto environment
 ```
 
-Services (rsyslog) and nix-ld are only set up by the NixOS module.
+Services (rsyslog) and nix-ld (workbox only, for prebuilt binaries like conda
+packages and pip wheels) are only set up by the NixOS module.
 
 ## Packages
 
