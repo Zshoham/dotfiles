@@ -1,12 +1,13 @@
-# The programs from the distrobox Dockerfiles as a NixOS module.
+# The environments (packages/environments) as a NixOS module:
 #
-#   basebox.enable - Dockerfile.basebox
-#   workbox.enable - Dockerfile.work (implies basebox)
+#   boxes.<environment>.enable  install the environment (its host packages)
+#                               and apply its NixOS configuration, and the
+#                               ones of the environments it includes
+#   boxes.identity              the user of git and jujutsu
 #
-# The packages, and the configuration moved over from chezmoi so far, are
-# defined in packages/ and config/. Takes the flake inputs it needs from
-# flake.nix.
-{ wrappers }:
+# Takes the flake inputs it needs from flake.nix, and the environment names
+# (the options can't depend on the module's pkgs).
+{ wrappers, environmentNames }:
 {
   config,
   lib,
@@ -15,50 +16,49 @@
 }:
 
 let
-  cfg = config.basebox;
+  cfg = config.boxes;
   packages = import ./packages {
-    inherit pkgs wrappers;
+    inherit pkgs lib wrappers;
     inherit (cfg) identity;
   };
+  inherit (packages) environments;
+  identity = import ./packages/identity.nix;
+  # an environment's NixOS configuration applies when an enabled environment
+  # includes it
+  included =
+    name:
+    lib.any (
+      other: cfg.${other}.enable && lib.any (env: env.name == name) environments.${other}.closure
+    ) environmentNames;
 in
 {
-  options = {
-    basebox.enable = lib.mkEnableOption "the basebox programs";
-    basebox.identity = {
+  options.boxes = {
+    identity = {
       name = lib.mkOption {
         type = lib.types.str;
-        default = (import ./packages/identity.nix).name;
+        default = identity.name;
         description = "Name used by git and jujutsu.";
       };
       email = lib.mkOption {
         type = lib.types.str;
-        default = (import ./packages/identity.nix).email;
+        default = identity.email;
         description = "Email used by git and jujutsu.";
       };
     };
-    workbox.enable = lib.mkEnableOption "the workbox programs";
-  };
+  }
+  // lib.genAttrs environmentNames (name: {
+    enable = lib.mkEnableOption "the ${name} environment";
+  });
 
-  config = lib.mkMerge [
-    (lib.mkIf config.basebox.enable {
-      environment.systemPackages = packages.environments.basebox.hostPackages;
-
-      programs.fish = {
-        enable = true;
-        package = packages.programs.fish;
-      };
-
-      environment.pathsToLink = [ "/share/dict" ];
-
-      documentation.dev.enable = true;
-    })
-
-    (lib.mkIf config.workbox.enable {
-      basebox.enable = true;
-
-      environment.systemPackages = packages.environments.workbox.hostPackages;
-
-      services.rsyslogd.enable = lib.mkDefault true;
-    })
-  ];
+  # mkIf per environment: which ones are enabled can't decide the shape of
+  # the config
+  config = lib.mkMerge (
+    map (
+      name:
+      lib.mkMerge [
+        (lib.mkIf cfg.${name}.enable { environment.systemPackages = environments.${name}.hostPackages; })
+        (lib.mkIf (included name) environments.${name}.nixos)
+      ]
+    ) environmentNames
+  );
 }

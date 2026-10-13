@@ -30,13 +30,16 @@
             {
               nixpkgs.hostPlatform = system;
               networking.hostName = name;
-              ${name}.enable = true;
+              boxes.${name}.enable = true;
             }
           ];
         };
     in
     {
-      nixosModules.default = import ./module.nix { inherit wrappers; };
+      nixosModules.default = import ./module.nix {
+        inherit wrappers;
+        environmentNames = lib.attrNames packages.environments;
+      };
 
       # Every environment: environments that need a regular Linux layout are
       # their shell (nix run .#workbox), the others their packages (nix shell
@@ -48,15 +51,13 @@
           inherit (packages) zellij-plugins replay-fish;
         };
 
+      # nix develop .#workbox
       devShells.${system} = lib.mapAttrs (
-        name: _: pkgs.mkShellNoCC { packages = [ self.packages.${system}.${name} ]; }
-      ) (lib.filterAttrs (_: env: !env.needsFhs) packages.environments);
+        _: env: if env.needsFhs then env.shell.env else pkgs.mkShellNoCC { packages = [ env.package ]; }
+      ) packages.environments;
 
       # sudo nixos-container create workbox --flake .#workbox
-      nixosConfigurations = {
-        basebox = mkContainer "basebox";
-        workbox = mkContainer "workbox";
-      };
+      nixosConfigurations = lib.mapAttrs (name: _: mkContainer name) packages.environments;
 
       formatter.${system} = pkgs.nixfmt;
     };

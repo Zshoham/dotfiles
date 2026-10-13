@@ -3,13 +3,16 @@
 # in nixpkgs.
 {
   pkgs,
+  # separate from pkgs, so the NixOS module can find the environments'
+  # options without evaluating its pkgs
+  lib ? pkgs.lib,
   wrappers,
   # used by git and jujutsu
   identity ? import ./identity.nix,
 }:
 
 let
-  inherit (pkgs) lib callPackage;
+  inherit (pkgs) callPackage;
 in
 rec {
   replay-fish = callPackage ./replay-fish.nix { };
@@ -36,8 +39,8 @@ rec {
     (lib.evalModules {
       modules = [
         (import ./environment.nix {
+          inherit lib;
           inherit (pkgs)
-            lib
             buildEnv
             buildFHSEnv
             glibcLocales
@@ -47,7 +50,7 @@ rec {
         })
       ]
       ++ lib.mapAttrsToList (file: _: ./environments + "/${file}") (builtins.readDir ./environments);
-      specialArgs = { inherit pkgs groups; };
+      specialArgs = { inherit pkgs groups programs; };
     }).config.environments;
 
   # The wrapped programs take precedence over the ones in pkgs.

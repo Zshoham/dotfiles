@@ -101,6 +101,14 @@ let
           default = [ ];
           description = "Packages only installed on the host, not in its shell.";
         };
+        nixos = mkOption {
+          type = types.attrsOf types.anything;
+          default = { };
+          description = ''
+            NixOS configuration (services, programs, ...) applied when it or
+            an environment including it is enabled in the NixOS module.
+          '';
+        };
 
         closure = mkOption {
           type = types.listOf types.raw;

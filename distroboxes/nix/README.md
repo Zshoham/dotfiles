@@ -1,13 +1,10 @@
 # Nix distroboxes
 
-The programs from the distrobox Dockerfiles as a NixOS module. The flake is
-standalone and does not depend on the rest of the repo. Programs not
-yet configured here (see below) are configured by the chezmoi dotfiles
-(`chezmoi init --apply Zshoham`).
-
-- `basebox.enable`: the basebox environment, programs from `Dockerfile.basebox`
-- `workbox.enable`: the workbox environment, programs from `Dockerfile.work`,
-  with the basebox, yocto and conda environments
+The programs from the distrobox Dockerfiles as environments: a NixOS module
+(`boxes.<environment>.enable`), NixOS containers, and shells and packages
+usable without changing the system. The flake is standalone and does not
+depend on the rest of the repo. Programs not yet configured here (see below)
+are configured by the chezmoi dotfiles (`chezmoi init --apply Zshoham`).
 
 ## Environments
 
@@ -48,13 +45,19 @@ pixi init proj && cd proj && pixi add python && pixi run python
 workbox       # all of it, e.g. a test from a conda environment using runqemu
 ```
 
+There's no sudo in the shells, use `runqemu slirp` (or create the tap
+devices with `runqemu-gen-tapdevs` beforehand).
+
 An environment has `packages`, `includes` (names of environments), `fhs`, a
 `profile` with environment variables, an `init` with bash setup (after
-`~/.bashrc`) and `hostOnlyPackages` that only go on the host (the workbox's
-gcc 16 with multilib, so its shell keeps yocto's gcc 13). From those it gets
+`~/.bashrc`), `hostOnlyPackages` that only go on the host (the workbox's
+gcc 16 with multilib, so its shell keeps yocto's gcc 13) and `nixos`, the
+NixOS configuration it needs on a host (the basebox's fish, the workbox's
+rsyslog). From those it gets
 its `closure`, `needsFhs`, `shell`, `hostPackages` and `package` (its shell
 if it needs the layout, otherwise its host packages). Adding an environment
-is adding a file:
+is adding a file, which also adds its `boxes.<name>.enable` option, flake
+package, dev shell and container:
 
 ```nix
 # packages/environments/example.nix
@@ -63,11 +66,10 @@ is adding a file:
   environments.example = {
     includes = [ "workbox" ];
     packages = [ pkgs.hello ];
+    nixos.services.openssh.enable = true;
   };
 }
-``` There's
-no sudo in the shells, use `runqemu slirp` (or create the tap devices with
-`runqemu-gen-tapdevs` beforehand).
+```
 
 ## Configuration
 
@@ -81,8 +83,8 @@ don't read anything from `~/.config`:
 | bat      | `config/bat`      | theme cache built at build time |
 | btop     | `config/btop`     | |
 | fish     | (chezmoi)         | finds replay.fish through `XDG_DATA_DIRS` |
-| git      | `config/git`      | user from `basebox.identity`, delta on its PATH |
-| jujutsu  | `config/jj`       | user from `basebox.identity` |
+| git      | `config/git`      | user from `boxes.identity`, delta on its PATH |
+| jujutsu  | `config/jj`       | user from `boxes.identity` |
 | kitty    | `config/kitty`    | flake package only, not part of the boxes (they only have its terminfo) |
 | neovim   | `config/nvim`     | LazyVim, everything from nix, see below |
 | starship | `config/starship.toml` | `starship init` points at the wrapper |
@@ -106,7 +108,7 @@ those paths, and neovim is started with `-u` on it. `~/.config/nvim` is
 ignored, and LazyVim extras are set in `config/nvim/lazyvim.json` (`:LazyExtras`
 can't change it).
 
-`basebox.identity.name` and `basebox.identity.email` default to Zshoham /
+`boxes.identity.name` and `boxes.identity.email` default to Zshoham /
 ShohamZarfti@gmail.com.
 
 Until chezmoi is gone, the dotfiles include the same files for the Arch
@@ -116,16 +118,18 @@ with the user from the chezmoi prompts).
 ## Without changing the system
 
 Every environment is a flake package: the ones that need a regular Linux
-layout are their shell, the others their packages.
+layout are their shell, the others their packages. Every environment is
+also a dev shell, the FHS shell for the ones that need it.
 
 ```sh
 nix shell github:Zshoham/dotfiles?dir=distroboxes/nix#basebox    # add the basebox to the current shell
 nix develop github:Zshoham/dotfiles?dir=distroboxes/nix#basebox  # bash with the basebox
 nix run github:Zshoham/dotfiles?dir=distroboxes/nix#workbox      # the workbox shell
-nix run github:Zshoham/dotfiles?dir=distroboxes/nix#yocto        # the yocto shell
+nix develop github:Zshoham/dotfiles?dir=distroboxes/nix#yocto    # the yocto shell
 ```
 
-Services (rsyslog) are only set up by the NixOS module. Neither box enables
+The environments' `nixos` configuration (services like rsyslog) is only
+applied by the NixOS module. Neither box enables
 nix-ld: everything they install is built by nix, and conda packages run in
 `conda`.
 
@@ -144,12 +148,16 @@ and the packages that are not in nixpkgs are also flake outputs.
 
   # in the system modules
   imports = [ inputs.boxes.nixosModules.default ];
-  workbox.enable = true;
+  boxes.workbox.enable = true;
 }
 ```
 
+`boxes.<environment>.enable` installs the environment's host packages and
+applies the `nixos` configuration of every environment it includes.
+
 ## As a NixOS container
 
+Every environment is a container (`nixosConfigurations.<environment>`).
 Imperatively from the flake (user `build`, uid 30000, passwordless sudo):
 
 ```sh
@@ -165,7 +173,7 @@ containers.workbox = {
   bindMounts.home = { hostPath = "/home/shoham"; isReadOnly = false; };
   config = { pkgs, ... }: {
     imports = [ inputs.boxes.nixosModules.default ];
-    workbox.enable = true;
+    boxes.workbox.enable = true;
     users.users.shoham = {
       isNormalUser = true;
       uid = 1000; # same as on the host

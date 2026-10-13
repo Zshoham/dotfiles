@@ -17,5 +17,7 @@
     packages = with groups; debug ++ work ++ groups.yocto;
     # multilib-devel, on the host, the shell keeps yocto's gcc 13
     hostOnlyPackages = [ (lib.hiPrio pkgs.gcc_multi) ];
+
+    nixos.services.rsyslogd.enable = lib.mkDefault true;
   };
 }
