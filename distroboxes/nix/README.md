@@ -11,9 +11,10 @@ yet configured here (see below) are configured by the chezmoi dotfiles
 
 ## Environments
 
-The boxes are environments (`packages/environments`, built with
+The boxes are environments: every file in `packages/environments` is a
+module that defines some (`environments.<name>`, the options are in
 `packages/environment.nix`). An environment has packages and can include
-other environments, so it has everything they have:
+other environments by name, so it has everything they have:
 
 - `basebox`: the programs of `Dockerfile.basebox`
 - `yocto`: building with yocto, in place of the buildtools-extended SDK: the
@@ -47,10 +48,24 @@ pixi init proj && cd proj && pixi add python && pixi run python
 workbox       # all of it, e.g. a test from a conda environment using runqemu
 ```
 
-An environment has a `name` (of its shell), `packages`, `includes`,
-`fhs`, a `profile` with environment variables, an `init` with bash setup
-(after `~/.bashrc`) and `hostOnlyPackages` that only go on the host (the
-workbox's gcc 16 with multilib, so its shell keeps yocto's gcc 13). There's
+An environment has `packages`, `includes` (names of environments), `fhs`, a
+`profile` with environment variables, an `init` with bash setup (after
+`~/.bashrc`) and `hostOnlyPackages` that only go on the host (the workbox's
+gcc 16 with multilib, so its shell keeps yocto's gcc 13). From those it gets
+its `closure`, `needsFhs`, `shell`, `hostPackages` and `package` (its shell
+if it needs the layout, otherwise its host packages). Adding an environment
+is adding a file:
+
+```nix
+# packages/environments/example.nix
+{ pkgs, groups, ... }:
+{
+  environments.example = {
+    includes = [ "workbox" ];
+    packages = [ pkgs.hello ];
+  };
+}
+``` There's
 no sudo in the shells, use `runqemu slirp` (or create the tap devices with
 `runqemu-gen-tapdevs` beforehand).
 

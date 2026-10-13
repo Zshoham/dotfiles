@@ -27,12 +27,12 @@ in
     basebox.identity = {
       name = lib.mkOption {
         type = lib.types.str;
-        default = "Zshoham";
+        default = (import ./packages/identity.nix).name;
         description = "Name used by git and jujutsu.";
       };
       email = lib.mkOption {
         type = lib.types.str;
-        default = "ShohamZarfti@gmail.com";
+        default = (import ./packages/identity.nix).email;
         description = "Email used by git and jujutsu.";
       };
     };

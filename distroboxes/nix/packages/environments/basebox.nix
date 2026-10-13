@@ -1,7 +1,8 @@
 # The basebox: the programs of Dockerfile.basebox.
-{ pkgs, groups }:
+{ pkgs, groups, ... }:
 
 {
-  name = "basebox";
-  packages = with groups; base ++ utils ++ buildTools ++ shell ++ languages ++ [ pkgs.gcc ];
+  environments.basebox.packages =
+    with groups;
+    base ++ utils ++ buildTools ++ shell ++ languages ++ [ pkgs.gcc ];
 }

@@ -5,10 +5,7 @@
   pkgs,
   wrappers,
   # used by git and jujutsu
-  identity ? {
-    name = "Zshoham";
-    email = "ShohamZarfti@gmail.com";
-  },
+  identity ? import ./identity.nix,
 }:
 
 let
@@ -31,26 +28,27 @@ rec {
     zellij = callPackage ./programs/zellij.nix { inherit wrappers zellij-plugins; };
   };
 
-  # The environments (environment.nix): the boxes, and the yocto and conda
-  # environments that need a regular Linux layout. Each has a shell of its
-  # own and the packages that install it on a host.
-  inherit
-    (import ./environment.nix {
-      inherit (pkgs)
-        lib
-        buildFHSEnv
-        writeText
-        writeShellScript
-        ;
-    })
-    mkEnvironment
-    ;
-  environments = lib.mapAttrs (_: mkEnvironment) {
-    basebox = callPackage ./environments/basebox.nix { inherit groups; };
-    yocto = callPackage ./environments/yocto.nix { inherit groups; };
-    conda = callPackage ./environments/conda.nix { inherit groups; };
-    workbox = callPackage ./environments/workbox.nix { inherit groups environments; };
-  };
+  # The environments (environment.nix), one module per file in
+  # environments/: the boxes, and the yocto and conda environments that need
+  # a regular Linux layout. Each has a shell of its own and the packages
+  # that install it on a host.
+  environments =
+    (lib.evalModules {
+      modules = [
+        (import ./environment.nix {
+          inherit (pkgs)
+            lib
+            buildEnv
+            buildFHSEnv
+            glibcLocales
+            writeText
+            writeShellScript
+            ;
+        })
+      ]
+      ++ lib.mapAttrsToList (file: _: ./environments + "/${file}") (builtins.readDir ./environments);
+      specialArgs = { inherit pkgs groups; };
+    }).config.environments;
 
   # The wrapped programs take precedence over the ones in pkgs.
   groups = with pkgs // programs; {

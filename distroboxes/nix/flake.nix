@@ -42,16 +42,7 @@
       # their shell (nix run .#workbox), the others their packages (nix shell
       # .#basebox, nix develop .#basebox).
       packages.${system} =
-        lib.mapAttrs (
-          name: env:
-          if env.needsFhs then
-            env.shell
-          else
-            pkgs.buildEnv {
-              inherit name;
-              paths = env.hostPackages;
-            }
-        ) packages.environments
+        lib.mapAttrs (_: env: env.package) packages.environments
         // packages.programs
         // {
           inherit (packages) zellij-plugins replay-fish;
