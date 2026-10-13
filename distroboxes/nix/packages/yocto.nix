@@ -5,16 +5,18 @@
 #
 #   yocto                      # bash in the yocto environment
 #   yocto -c 'bitbake ...'
+#   import-env conda           # in the yocto shell, micromamba and pixi
 {
   lib,
-  buildFHSEnv,
   glibcLocales,
   runCommand,
   pkgs,
   groups,
+  layers,
+  mkFhsShell,
 }:
 
-buildFHSEnv {
+mkFhsShell {
   name = "yocto";
 
   targetPkgs =
@@ -49,8 +51,7 @@ buildFHSEnv {
   profile = ''
     export LOCALE_ARCHIVE=${glibcLocales}/lib/locale/locale-archive
     export LANG=en_US.UTF-8
-    export PS1="(yocto) $PS1"
   '';
 
-  runScript = "bash";
+  imports = [ layers.conda ];
 }

@@ -31,8 +31,20 @@ rec {
     zellij = callPackage ./programs/zellij.nix { inherit wrappers zellij-plugins; };
   };
 
-  yocto = callPackage ./yocto.nix { inherit groups; };
-  conda = callPackage ./conda.nix { inherit groups; };
+  # the FHS shells, and the layers they can be made of (fhs.nix)
+  mkFhsShell = import ./fhs.nix {
+    inherit (pkgs)
+      lib
+      buildFHSEnv
+      writeText
+      writeShellScript
+      ;
+  };
+  layers = {
+    conda = callPackage ./layers/conda.nix { };
+  };
+  yocto = callPackage ./yocto.nix { inherit groups layers mkFhsShell; };
+  conda = callPackage ./conda.nix { inherit groups layers mkFhsShell; };
 
   # The full package list of each box.
   boxes = {
