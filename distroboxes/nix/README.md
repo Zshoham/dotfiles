@@ -140,6 +140,15 @@ nix-ld: everything they install is built by nix, and conda packages run in
 the environments are made of, and the environments. The wrapped programs
 and the packages that are not in nixpkgs are also flake outputs.
 
+## Checks
+
+`nix flake check` (`checks.nix`) builds every environment and container,
+starts neovim headless (LazyVim and every plugin loaded, parsers and
+language servers found, no startup messages), and checks the shells: gcc 13
+and python 3.12 with yocto's modules in the yocto and workbox shells,
+micromamba and pixi in the conda and workbox shells, and that every
+environment installs the shells of what it includes.
+
 ## On a NixOS host
 
 ```nix

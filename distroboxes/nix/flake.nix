@@ -59,6 +59,11 @@
       # sudo nixos-container create workbox --flake .#workbox
       nixosConfigurations = lib.mapAttrs (name: _: mkContainer name) packages.environments;
 
+      checks.${system} = import ./checks.nix {
+        inherit pkgs packages;
+        inherit (self) nixosConfigurations;
+      };
+
       formatter.${system} = pkgs.nixfmt;
     };
 }

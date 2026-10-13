@@ -31,6 +31,11 @@ vimUtils.buildVimPlugin {
   pname = "gitlab.nvim";
   inherit version src;
   doCheck = false;
+  # setup() warns when go isn't installed, even with the server provided
+  postPatch = ''
+    substituteInPlace lua/gitlab/version.lua \
+      --replace-fail 'local has_version = M.is_go_valid()' 'local has_version = true -- the server is built by nix'
+  '';
   passthru = { inherit server; };
   meta = {
     description = "Review GitLab merge requests in neovim";
