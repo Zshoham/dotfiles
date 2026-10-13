@@ -18,15 +18,17 @@ source poky/oe-init-build-env
 bitbake core-image-minimal
 ```
 
-`mamba-shell` (workbox) is the same kind of environment for micromamba:
-conda packages are prebuilt binaries that need a regular Linux layout, so
-they run there without nix-ld. It sets up `micromamba activate`, with the
-environments in `$MAMBA_ROOT_PREFIX` (default `~/.local/share/mamba`).
+`conda` (workbox) is the same kind of environment for conda packages, with
+micromamba and pixi: conda packages are prebuilt binaries that need a
+regular Linux layout, so they run there without nix-ld. It sets up
+`micromamba activate`, with the environments in `$MAMBA_ROOT_PREFIX`
+(default `~/.local/share/mamba`).
 
 ```sh
-mamba-shell
+conda
 micromamba create -n py -c conda-forge python
 micromamba activate py
+pixi init proj && cd proj && pixi add python && pixi run python
 ```
 
 ## Configuration
@@ -93,7 +95,7 @@ nix-ld: everything they install is built by nix, and conda packages run in
 `utils`, `buildTools`, `shell`, `languages`, `debug`, `yocto`, `work`) and
 the full list of each box, used by the module, the box shells and the yocto
 environment. The packages that are not in nixpkgs
-are also flake outputs, e.g. `nix run .#yocto` or `nix run .#mamba-shell`.
+are also flake outputs, e.g. `nix run .#yocto` or `nix run .#conda`.
 
 ## On a NixOS host
 

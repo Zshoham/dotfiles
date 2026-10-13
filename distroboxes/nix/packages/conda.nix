@@ -1,9 +1,9 @@
-# A shell for micromamba, replacing nix-ld for conda packages: they are
-# prebuilt binaries that need a regular Linux layout (/lib64/ld-linux...,
-# /usr/lib), which the FHS environment provides.
+# A shell for conda packages with micromamba and pixi, replacing nix-ld:
+# conda packages are prebuilt binaries that need a regular Linux layout
+# (/lib64/ld-linux..., /usr/lib), which the FHS environment provides.
 #
-#   mamba-shell                          # bash with micromamba set up
-#   mamba-shell -c 'micromamba create ...'
+#   conda                                # bash with micromamba set up
+#   conda -c 'micromamba create ...'
 {
   buildFHSEnv,
   glibcLocales,
@@ -20,7 +20,7 @@ let
   '';
 in
 buildFHSEnv {
-  name = "mamba-shell";
+  name = "conda";
 
   targetPkgs =
     _:
@@ -28,6 +28,7 @@ buildFHSEnv {
     ++ groups.utils
     ++ [ micromamba ]
     ++ (with pkgs; [
+      pixi
       git
 
       # libraries conda packages expect from the system
@@ -39,23 +40,23 @@ buildFHSEnv {
   profile = ''
     export LOCALE_ARCHIVE=${glibcLocales}/lib/locale/locale-archive
     export MAMBA_ROOT_PREFIX="''${MAMBA_ROOT_PREFIX:-''${XDG_DATA_HOME:-$HOME/.local/share}/mamba}"
-    export PS1="(mamba) $PS1"
+    export PS1="(conda) $PS1"
   '';
 
   # micromamba's shell hook (for `micromamba activate`), in interactive
-  # shells after ~/.bashrc and in `mamba-shell -c ...` through BASH_ENV
+  # shells after ~/.bashrc and in `conda -c ...` through BASH_ENV
   runScript =
     let
-      hook = pkgs.writeText "mamba-hook.sh" ''
+      hook = pkgs.writeText "conda-hook.sh" ''
         unset BASH_ENV
         eval "$(micromamba shell hook --shell bash)"
       '';
-      bashrc = pkgs.writeText "mamba-bashrc" ''
+      bashrc = pkgs.writeText "conda-bashrc" ''
         [ -f ~/.bashrc ] && source ~/.bashrc
         source ${hook}
       '';
     in
-    pkgs.writeShellScript "mamba-shell" ''
+    pkgs.writeShellScript "conda" ''
       if [ $# -gt 0 ]; then
         export BASH_ENV=${hook}
       fi

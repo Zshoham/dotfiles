@@ -44,7 +44,7 @@
         // {
           inherit (packages)
             yocto
-            mamba-shell
+            conda
             zellij-plugins
             replay-fish
             ;
