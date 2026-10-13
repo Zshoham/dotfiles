@@ -41,13 +41,9 @@
       packages.${system} =
         packages.envs
         // packages.programs
+        // packages.shells
         // {
-          inherit (packages)
-            yocto
-            conda
-            zellij-plugins
-            replay-fish
-            ;
+          inherit (packages) zellij-plugins replay-fish;
         };
 
       # nix develop .#workbox

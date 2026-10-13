@@ -8,42 +8,43 @@ yet configured here (see below) are configured by the chezmoi dotfiles
 - `basebox.enable`: programs from `Dockerfile.basebox`
 - `workbox.enable`: programs from `Dockerfile.work`, implies `basebox`
 
-With `workbox`, the `yocto` command enters an environment for building with
-yocto (`packages/yocto.nix`), in place of the buildtools-extended SDK: an FHS
-environment with the same toolchain (gcc 13) and the yocto host tools.
+## Environments
 
-```sh
-yocto
-source poky/oe-init-build-env
-bitbake core-image-minimal
-```
+Some tools need a regular Linux layout (`/lib64/ld-linux...`, `/usr/lib`),
+so the workbox has shells that provide one (FHS environments). Each is
+built from environments (`packages/environments`), and combinations of
+them are built ahead of time (`shells` in `packages/default.nix`,
+`packages/env-shell.nix` builds them):
 
-`conda` (workbox) is the same kind of environment for conda based
-development, with micromamba and pixi: conda packages are prebuilt binaries
-that need a regular Linux layout, so they run there without nix-ld. It sets
-up `micromamba activate`, with the environments in `$MAMBA_ROOT_PREFIX`
-(default `~/.local/share/mamba`).
+- `yocto`: building with yocto, in place of the buildtools-extended SDK:
+  the same toolchain (gcc 13) and the yocto host tools.
 
-```sh
-conda
-micromamba create -n py -c conda-forge python
-micromamba activate py
-pixi init proj && cd proj && pixi add python && pixi run python
-```
+  ```sh
+  yocto
+  source poky/oe-init-build-env
+  bitbake core-image-minimal
+  ```
 
-The shells are built from layers (`packages/fhs.nix`), and a layer can be
-imported into a running shell with `import-env`. In `yocto`, `import-env
-conda` adds micromamba and pixi, e.g. to run a test from a conda
-environment that uses `runqemu`:
+- `conda`: conda based development with micromamba and pixi. Conda
+  packages are prebuilt binaries, they run here without nix-ld. It sets up
+  `micromamba activate`, with the environments in `$MAMBA_ROOT_PREFIX`
+  (default `~/.local/share/mamba`).
 
-```sh
-yocto
-import-env conda
-micromamba activate tests
-```
+  ```sh
+  conda
+  micromamba create -n py -c conda-forge python
+  micromamba activate py
+  pixi init proj && cd proj && pixi add python && pixi run python
+  ```
 
-A layer only sets up the shell (PATH, variables, functions); files the
-shell has in `/usr` and `/lib` are fixed when it starts.
+- `yocto-conda`: both, e.g. to run a test from a conda environment that
+  uses `runqemu`.
+
+An environment has a `name`, the `packages` of the shell's file system, a
+`profile` with environment variables and an `init` with bash setup (after
+`~/.bashrc`). A combined shell has all of them, its name joins theirs with
+`-`. There's no sudo in these shells, use `runqemu slirp` (or create the tap
+devices with `runqemu-gen-tapdevs` beforehand).
 
 ## Configuration
 
@@ -109,7 +110,7 @@ nix-ld: everything they install is built by nix, and conda packages run in
 `utils`, `buildTools`, `shell`, `languages`, `debug`, `yocto`, `work`) and
 the full list of each box, used by the module, the box shells and the yocto
 environment. The packages that are not in nixpkgs
-are also flake outputs, e.g. `nix run .#yocto` or `nix run .#conda`.
+are also flake outputs, e.g. `nix run .#yocto-conda`.
 
 ## On a NixOS host
 

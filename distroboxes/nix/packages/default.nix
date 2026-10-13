@@ -31,8 +31,13 @@ rec {
     zellij = callPackage ./programs/zellij.nix { inherit wrappers zellij-plugins; };
   };
 
-  # the FHS shells, and the layers they can be made of (fhs.nix)
-  mkFhsShell = import ./fhs.nix {
+  # Environments that need a regular Linux layout, and the shells built from
+  # them (env-shell.nix): each environment on its own and combinations.
+  environments = {
+    yocto = callPackage ./environments/yocto.nix { inherit groups; };
+    conda = callPackage ./environments/conda.nix { inherit groups; };
+  };
+  mkEnvShell = import ./env-shell.nix {
     inherit (pkgs)
       lib
       buildFHSEnv
@@ -40,11 +45,14 @@ rec {
       writeShellScript
       ;
   };
-  layers = {
-    conda = callPackage ./layers/conda.nix { };
+  shells = lib.mapAttrs (_: mkEnvShell) {
+    yocto = [ environments.yocto ];
+    conda = [ environments.conda ];
+    yocto-conda = [
+      environments.yocto
+      environments.conda
+    ];
   };
-  yocto = callPackage ./yocto.nix { inherit groups layers mkFhsShell; };
-  conda = callPackage ./conda.nix { inherit groups layers mkFhsShell; };
 
   # The full package list of each box.
   boxes = {
@@ -56,11 +64,8 @@ rec {
       ++ debug
       ++ work
       ++ groups.yocto
-      ++ [
-        (lib.hiPrio pkgs.gcc_multi)
-        yocto
-        conda
-      ];
+      ++ [ (lib.hiPrio pkgs.gcc_multi) ]
+      ++ lib.attrValues shells;
   };
 
   # Each box as a single package, for nix shell / nix develop.

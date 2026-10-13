@@ -1,26 +1,18 @@
-# An environment for building with yocto, replacing the buildtools-extended
-# SDK of the workbox image. The toolchain matches buildtools-extended 4.3
-# (gcc 13), with python 3.12, the FHS layout keeps bitbake's host tool
-# checks happy.
-#
-#   yocto                      # bash in the yocto environment
-#   yocto -c 'bitbake ...'
-#   import-env conda           # in the yocto shell, micromamba and pixi
+# The yocto environment, replacing the buildtools-extended SDK of the
+# workbox image. The toolchain matches buildtools-extended 4.3 (gcc 13),
+# with python 3.12, the FHS layout keeps bitbake's host tool checks happy.
 {
   lib,
   glibcLocales,
   runCommand,
   pkgs,
   groups,
-  layers,
-  mkFhsShell,
 }:
 
-mkFhsShell {
+{
   name = "yocto";
 
-  targetPkgs =
-    _:
+  packages =
     groups.base
     ++ groups.utils
     ++ groups.buildTools
@@ -52,6 +44,4 @@ mkFhsShell {
     export LOCALE_ARCHIVE=${glibcLocales}/lib/locale/locale-archive
     export LANG=en_US.UTF-8
   '';
-
-  imports = [ layers.conda ];
 }
